@@ -21,6 +21,6 @@ view model =
                            , on "change" (JD.succeed FileSelected)
                            ]
                            [] 
-                   , div [] (List.map text deps)
+                   , div [] (List.map (\d -> let {name,thanked} = d in (text name)) deps)
                    ] 
         )

@@ -29,6 +29,7 @@ update msg model =
 
         FileLoaded fileContents -> 
             let decodeResult = decodeString (field "dependencies" (dict string)) fileContents
-                deps = Result.map keys decodeResult 
-            in ({model | dependencies = deps }, Cmd.none)
+                names = Result.map keys decodeResult 
+                repos = Result.map (List.map (\nm -> {name=nm, thanked=False})) names
+            in ({model | dependencies = repos }, Cmd.none)
 
