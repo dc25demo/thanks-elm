@@ -30,5 +30,5 @@ update msg model =
         FileLoaded fileContents -> 
             let decodeResult = decodeString (field "dependencies" (dict string)) fileContents
                 deps = Result.map keys decodeResult 
-            in (model, Cmd.none)
+            in ({model | dependencies = deps }, Cmd.none)
 
