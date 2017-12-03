@@ -15,12 +15,15 @@ view model =
                    [ text ("Errors: " ++ toString e) ]
   
               Ok deps -> 
-                   [ text "Select a 'package.json' file: "
+                   [ text "Select an 'elm-package.json' file: "
                    , input [ type_ "file"
                            , id "PackageJSON"
                            , on "change" (JD.succeed FileSelected)
                            ]
                            [] 
-                   , div [] (List.map (\d -> let {name,thanked} = d in (text name)) deps)
+                   , div [] ( (List.map (\d -> let {name,thanked} = d in (div [] [text name])) deps) 
+                            ++ [div [] (List.map text model.gazers)]
+                            )
+
                    ] 
         )
