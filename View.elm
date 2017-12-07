@@ -24,6 +24,7 @@ view model =
                    , div [] ( (List.map (\d -> let {name,thanked} = d in (div [] [text name])) deps) 
                             ++ [div [] (List.map text model.gazers)]
                             )
+                   , div [] [ text (toString model) ]
 
                    ] 
         )

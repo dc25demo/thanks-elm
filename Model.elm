@@ -1,8 +1,5 @@
-module Model exposing (Model, Repo, init)
+module Model exposing (Model, Repo)
 import Msg exposing (Msg)
-
-init : (Model, Cmd Msg)
-init = (Model (Ok []) [], Cmd.none) 
 
 type alias Repo =
     { name : String

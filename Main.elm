@@ -2,7 +2,7 @@ import Html exposing (..)
 import Http exposing (..)
 import Ports exposing (fileContentRead, fileSelected, FileLoadedData)
 import Msg exposing (..)
-import Model exposing (Model, Repo, init)
+import Model exposing (Model, Repo)
 import View exposing (view)
 import Json.Decode exposing (..)
 import Dict exposing (keys)
@@ -21,10 +21,13 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     fileContentRead FileLoaded
 
-getGazersCmd : Repo -> Cmd Msg
-getGazersCmd repo = 
+init : (Model, Cmd Msg)
+init = (Model (Ok []) [], getGazersCmd "dc25/solitaire") 
+
+getGazersCmd : String -> Cmd Msg
+getGazersCmd reponame = 
    let
-       url = "https://api.github.com/repos/" ++ repo.name ++ "/stargazers"
+       url = "https://api.github.com/repos/" ++ reponame ++ "/stargazers"
 
        decodeGazers = list (field "login" string)
 
@@ -49,7 +52,7 @@ update msg model =
                , case repos of
                      Err _ -> Cmd.none
                      Ok [] -> Cmd.none
-                     Ok (r0 :: _) -> getGazersCmd r0
+                     Ok (r0 :: _) -> getGazersCmd "dc25/solitaire"
                )
         GazersFetched (Err _) -> (model, Cmd.none)
         GazersFetched (Ok gazers) -> ({model | gazers=gazers}, Cmd.none)
