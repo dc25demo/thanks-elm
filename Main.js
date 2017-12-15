@@ -9881,8 +9881,12 @@ var _user$project$Ports$fileSelected = _elm_lang$core$Native_Platform.outgoingPo
 	function (v) {
 		return v;
 	});
-var _user$project$Ports$fileContentRead = _elm_lang$core$Native_Platform.incomingPort('fileContentRead', _elm_lang$core$Json_Decode$string);
+var _user$project$Ports$fileContentRead = _elm_lang$core$Native_Platform.incomingPort('fileContentRead', _elm_lang$core$Json_Decode$value);
 
+var _user$project$Msg$StarSet = F2(
+	function (a, b) {
+		return {ctor: 'StarSet', _0: a, _1: b};
+	});
 var _user$project$Msg$GetAuthorization = function (a) {
 	return {ctor: 'GetAuthorization', _0: a};
 };
@@ -9894,183 +9898,323 @@ var _user$project$Msg$FileLoaded = function (a) {
 };
 var _user$project$Msg$FileSelected = {ctor: 'FileSelected'};
 
-var _user$project$Model$Repo = F2(
-	function (a, b) {
-		return {name: a, thanked: b};
-	});
-var _user$project$Model$Model = F2(
-	function (a, b) {
-		return {dependencies: a, auth: b};
+var _user$project$Model$Model = F3(
+	function (a, b, c) {
+		return {dependencies: a, fileName: b, location: c};
 	});
 
-var _user$project$View$view = function (model) {
+var _user$project$View$thankedCheckbox = F2(
+	function (s, boxId) {
+		return A2(
+			_elm_lang$html$Html$input,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$type_('checkbox'),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$disabled(true),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$checked(s),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$id(boxId),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('flag'),
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				}
+			},
+			{ctor: '[]'});
+	});
+var _user$project$View$showThanked = function (_p0) {
+	var _p1 = _p0;
+	var _p4 = _p1._0;
+	var splitDeps = A2(_elm_lang$core$String$split, '/', _p4);
+	var _p2 = function () {
+		var _p3 = splitDeps;
+		if (_p3.ctor === '[]') {
+			return {ctor: '_Tuple2', _0: '', _1: ''};
+		} else {
+			if (_p3._1.ctor === '[]') {
+				return {ctor: '_Tuple2', _0: '', _1: _p3._0};
+			} else {
+				return {ctor: '_Tuple2', _0: _p3._0, _1: _p3._1._0};
+			}
+		}
+	}();
+	var user = _p2._0;
+	var repo = _p2._1;
 	return A2(
 		_elm_lang$html$Html$div,
+		{ctor: '[]'},
 		{
 			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('FileWrapper'),
-			_1: {ctor: '[]'}
-		},
-		function () {
-			var _p0 = model.dependencies;
-			if (_p0.ctor === 'Just') {
-				if (_p0._0.ctor === 'Err') {
-					return {
+			_0: A2(_user$project$View$thankedCheckbox, _p1._1, _p4),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$label,
+					{
 						ctor: '::',
-						_0: _elm_lang$html$Html$text(
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								'Errors: ',
-								_elm_lang$core$Basics$toString(_p0._0._0))),
+						_0: _elm_lang$html$Html_Attributes$for(_p4),
 						_1: {ctor: '[]'}
-					};
-				} else {
-					return {
+					},
+					{
 						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$div,
-							{ctor: '[]'},
-							A2(
-								_elm_lang$core$List$map,
-								function (d) {
-									var _p1 = d;
-									var name = _p1.name;
-									var thanked = _p1.thanked;
-									return A2(
-										_elm_lang$html$Html$div,
-										{ctor: '[]'},
-										{
-											ctor: '::',
-											_0: _elm_lang$html$Html$text(name),
-											_1: {ctor: '[]'}
-										});
-								},
-								_p0._0._0)),
+						_0: _elm_lang$html$Html$text('Thanking '),
 						_1: {ctor: '[]'}
-					};
-				}
-			} else {
-				return {
+					}),
+				_1: {
 					ctor: '::',
-					_0: _elm_lang$html$Html$text('Select an \'elm-package.json\' file: '),
+					_0: A2(
+						_elm_lang$html$Html$label,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$for(_p4),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('name'),
+								_1: {ctor: '[]'}
+							}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(user),
+							_1: {ctor: '[]'}
+						}),
 					_1: {
 						ctor: '::',
 						_0: A2(
-							_elm_lang$html$Html$input,
+							_elm_lang$html$Html$label,
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$type_('file'),
-								_1: {
+								_0: _elm_lang$html$Html_Attributes$for(_p4),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(' for '),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$label,
+								{
 									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$id('PackageJSON'),
+									_0: _elm_lang$html$Html_Attributes$for(_p4),
 									_1: {
 										ctor: '::',
-										_0: A2(
-											_elm_lang$html$Html_Events$on,
-											'change',
-											_elm_lang$core$Json_Decode$succeed(_user$project$Msg$FileSelected)),
+										_0: _elm_lang$html$Html_Attributes$class('name'),
 										_1: {ctor: '[]'}
 									}
-								}
-							},
-							{ctor: '[]'}),
-						_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text(repo),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
 					}
-				};
+				}
 			}
-		}());
+		});
+};
+var _user$project$View$chooseFile = A2(
+	_elm_lang$html$Html$div,
+	{ctor: '[]'},
+	{
+		ctor: '::',
+		_0: A2(
+			_elm_lang$html$Html$label,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$for('PackageJSON'),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text('Select an \"elm-package.json\" file: '),
+				_1: {ctor: '[]'}
+			}),
+		_1: {
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$input,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$type_('file'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$id('PackageJSON'),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html_Events$on,
+								'change',
+								_elm_lang$core$Json_Decode$succeed(_user$project$Msg$FileSelected)),
+							_1: {ctor: '[]'}
+						}
+					}
+				},
+				{ctor: '[]'}),
+			_1: {ctor: '[]'}
+		}
+	});
+var _user$project$View$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _user$project$View$chooseFile,
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$br,
+					{ctor: '[]'},
+					{ctor: '[]'}),
+				_1: {
+					ctor: '::',
+					_0: function () {
+						var _p5 = model.fileName;
+						if (_p5.ctor === 'Just') {
+							if (_p5._0.ctor === 'Err') {
+								return A2(
+									_elm_lang$html$Html$div,
+									{ctor: '[]'},
+									{
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$label,
+											{ctor: '[]'},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text(
+													A2(
+														_elm_lang$core$Basics_ops['++'],
+														'Errors: ',
+														_elm_lang$core$Basics$toString(_p5._0._0))),
+												_1: {ctor: '[]'}
+											}),
+										_1: {ctor: '[]'}
+									});
+							} else {
+								return A2(
+									_elm_lang$html$Html$label,
+									{ctor: '[]'},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text(
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												'Thanking everyone who helped create and maintain your Elm project\'s dependences ( as found in file: \"',
+												A2(_elm_lang$core$Basics_ops['++'], _p5._0._0, '\" )'))),
+										_1: {ctor: '[]'}
+									});
+							}
+						} else {
+							return A2(
+								_elm_lang$html$Html$div,
+								{ctor: '[]'},
+								{ctor: '[]'});
+						}
+					}(),
+					_1: function () {
+						var _p6 = model.dependencies;
+						if (_p6.ctor === 'Just') {
+							if (_p6._0.ctor === 'Err') {
+								return {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$label,
+										{ctor: '[]'},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text(
+												A2(
+													_elm_lang$core$Basics_ops['++'],
+													'Errors: ',
+													_elm_lang$core$Basics$toString(_p6._0._0))),
+											_1: {ctor: '[]'}
+										}),
+									_1: {ctor: '[]'}
+								};
+							} else {
+								return {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$div,
+										{ctor: '[]'},
+										A2(
+											_elm_lang$core$List$map,
+											_user$project$View$showThanked,
+											_elm_lang$core$Dict$toList(_p6._0._0))),
+									_1: {ctor: '[]'}
+								};
+							}
+						} else {
+							return {ctor: '[]'};
+						}
+					}()
+				}
+			}
+		});
 };
 
-var _user$project$Main$subscriptions = function (model) {
+var _user$project$Main$subscriptions = function (_p0) {
 	return _user$project$Ports$fileContentRead(_user$project$Msg$FileLoaded);
 };
-var _user$project$Main$update = F2(
-	function (msg, model) {
-		var _p0 = msg;
-		_v0_3:
-		do {
-			switch (_p0.ctor) {
-				case 'GetAuthorization':
-					if (_p0._0.ctor === 'Ok') {
-						return {
-							ctor: '_Tuple2',
-							_0: _elm_lang$core$Native_Utils.update(
-								model,
-								{
-									auth: _elm_lang$core$Maybe$Just(_p0._0._0)
-								}),
-							_1: _elm_lang$core$Platform_Cmd$none
-						};
-					} else {
-						break _v0_3;
-					}
-				case 'FileSelected':
-					return {
-						ctor: '_Tuple2',
-						_0: model,
-						_1: _user$project$Ports$fileSelected('PackageJSON')
-					};
-				case 'FileLoaded':
-					var decodeResult = A2(
-						_elm_lang$core$Json_Decode$decodeString,
-						A2(
-							_elm_lang$core$Json_Decode$field,
-							'dependencies',
-							_elm_lang$core$Json_Decode$dict(_elm_lang$core$Json_Decode$string)),
-						_p0._0);
-					var names = A2(_elm_lang$core$Result$map, _elm_lang$core$Dict$keys, decodeResult);
-					var repos = A2(
-						_elm_lang$core$Result$map,
-						_elm_lang$core$List$map(
-							function (nm) {
-								return {name: nm, thanked: false};
-							}),
-						names);
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{
-								dependencies: _elm_lang$core$Maybe$Just(repos)
-							}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				default:
-					break _v0_3;
-			}
-		} while(false);
-		return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+var _user$project$Main$applyStar = F2(
+	function (auth, dependency) {
+		var rq = _elm_lang$http$Http$request(
+			{
+				method: 'PUT',
+				headers: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$http$Http$header,
+						'Authorization',
+						A2(_elm_lang$core$Basics_ops['++'], 'token ', auth)),
+					_1: {ctor: '[]'}
+				},
+				url: A2(_elm_lang$core$Basics_ops['++'], 'https://api.github.com/user/starred/', dependency),
+				body: _elm_lang$http$Http$emptyBody,
+				expect: _elm_lang$http$Http$expectStringResponse(
+					function (resp) {
+						return _elm_lang$core$Result$Ok(
+							_elm_lang$core$Basics$toString(resp));
+					}),
+				timeout: _elm_lang$core$Maybe$Nothing,
+				withCredentials: false
+			});
+		return A2(
+			_elm_lang$http$Http$send,
+			_user$project$Msg$StarSet(dependency),
+			rq);
 	});
-var _user$project$Main$state = 'w9erwlksjdf';
-var _user$project$Main$scope = 'repo:user';
-var _user$project$Main$repoName = 'oauthElm';
-var _user$project$Main$redirectUri = A2(_elm_lang$core$Basics_ops['++'], 'https://dc25.github.io/', _user$project$Main$repoName);
-var _user$project$Main$clientSecret = 'b768bf69c0f44866330780a11d01cbf192ec0727';
-var _user$project$Main$clientId = '8256469ec6a458a2b111';
-var _user$project$Main$githubOauthUri = A2(
-	_elm_lang$core$Basics_ops['++'],
-	'https://github.com/login/oauth/authorize',
-	A2(
-		_elm_lang$core$Basics_ops['++'],
-		'?client_id=',
-		A2(
-			_elm_lang$core$Basics_ops['++'],
-			_user$project$Main$clientId,
-			A2(
-				_elm_lang$core$Basics_ops['++'],
-				'&redirect_uri=',
+var _user$project$Main$applyStars = F2(
+	function (auth, model) {
+		var _p1 = model.dependencies;
+		if ((_p1.ctor === 'Just') && (_p1._0.ctor === 'Ok')) {
+			return _elm_lang$core$Platform_Cmd$batch(
 				A2(
-					_elm_lang$core$Basics_ops['++'],
-					_user$project$Main$redirectUri,
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						'&scope=',
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							_user$project$Main$scope,
-							A2(_elm_lang$core$Basics_ops['++'], '&state=', _user$project$Main$state))))))));
+					_elm_lang$core$List$map,
+					_user$project$Main$applyStar(auth),
+					_elm_lang$core$Dict$keys(_p1._0._0)));
+		} else {
+			return _elm_lang$core$Platform_Cmd$none;
+		}
+	});
+var _user$project$Main$clientSecret = '4ce0dc66e45e26e03279509a977ab6fc1de54d3f';
+var _user$project$Main$clientId = 'b375bfd8cc7651ac2a7c';
 var _user$project$Main$requestAuthorization = function (code) {
-	var corsAnywhere = 'https://cors-anywhere.herokuapp.com/';
+	var corsAnywhere = 'https://cryptic-headland-94862.herokuapp.com/';
 	var content = A2(
 		_elm_lang$core$Basics_ops['++'],
 		'client_id=',
@@ -10101,31 +10245,187 @@ var _user$project$Main$requestAuthorization = function (code) {
 		});
 	return A2(_elm_lang$http$Http$send, _user$project$Msg$GetAuthorization, rq);
 };
+var _user$project$Main$githubOauthUri = F2(
+	function (location, names) {
+		return A2(
+			_elm_lang$core$Basics_ops['++'],
+			'https://github.com/login/oauth/authorize',
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				'?client_id=',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					_user$project$Main$clientId,
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						'&redirect_uri=',
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							location.origin,
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								location.pathname,
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									'&scope=',
+									A2(
+										_elm_lang$core$Basics_ops['++'],
+										'public_repo',
+										A2(_elm_lang$core$Basics_ops['++'], '&state=', names)))))))));
+	});
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p2 = msg;
+		_v1_4:
+		do {
+			switch (_p2.ctor) {
+				case 'FileSelected':
+					return {
+						ctor: '_Tuple2',
+						_0: model,
+						_1: _user$project$Ports$fileSelected('PackageJSON')
+					};
+				case 'FileLoaded':
+					var _p4 = _p2._0;
+					var fileName = A2(
+						_elm_lang$core$Json_Decode$decodeValue,
+						A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string),
+						_p4);
+					var contents = A2(
+						_elm_lang$core$Json_Decode$decodeValue,
+						A2(_elm_lang$core$Json_Decode$field, 'content', _elm_lang$core$Json_Decode$string),
+						_p4);
+					var deps = A2(
+						_elm_lang$core$Result$andThen,
+						_elm_lang$core$Json_Decode$decodeString(
+							A2(_elm_lang$core$Json_Decode$field, 'dependencies', _elm_lang$core$Json_Decode$value)),
+						contents);
+					var _p3 = {ctor: '_Tuple2', _0: fileName, _1: deps};
+					if (((_p3.ctor === '_Tuple2') && (_p3._0.ctor === 'Ok')) && (_p3._1.ctor === 'Ok')) {
+						return {
+							ctor: '_Tuple2',
+							_0: model,
+							_1: _elm_lang$navigation$Navigation$load(
+								A2(
+									_user$project$Main$githubOauthUri,
+									model.location,
+									A2(
+										_elm_lang$core$Json_Encode$encode,
+										0,
+										_elm_lang$core$Json_Encode$object(
+											{
+												ctor: '::',
+												_0: {
+													ctor: '_Tuple2',
+													_0: 'name',
+													_1: _elm_lang$core$Json_Encode$string(_p3._0._0)
+												},
+												_1: {
+													ctor: '::',
+													_0: {ctor: '_Tuple2', _0: 'content', _1: _p3._1._0},
+													_1: {ctor: '[]'}
+												}
+											}))))
+						};
+					} else {
+						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+					}
+				case 'GetAuthorization':
+					if (_p2._0.ctor === 'Ok') {
+						return {
+							ctor: '_Tuple2',
+							_0: model,
+							_1: A2(_user$project$Main$applyStars, _p2._0._0, model)
+						};
+					} else {
+						break _v1_4;
+					}
+				case 'StarSet':
+					var newDeps = A2(
+						_elm_lang$core$Maybe$map,
+						_elm_lang$core$Result$map(
+							A2(_elm_lang$core$Dict$insert, _p2._0, true)),
+						model.dependencies);
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{dependencies: newDeps}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				default:
+					break _v1_4;
+			}
+		} while(false);
+		return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+	});
 var _user$project$Main$TokenData = F2(
 	function (a, b) {
 		return {ctor: 'TokenData', _0: a, _1: b};
 	});
-var _user$project$Main$redirectParser = A2(
-	_evancz$url_parser$UrlParser$map,
-	_user$project$Main$TokenData,
-	A2(
-		_evancz$url_parser$UrlParser_ops['<?>'],
+var _user$project$Main$redirectParser = function (repoName) {
+	return A2(
+		_evancz$url_parser$UrlParser$map,
+		_user$project$Main$TokenData,
 		A2(
 			_evancz$url_parser$UrlParser_ops['<?>'],
-			_evancz$url_parser$UrlParser$s(_user$project$Main$repoName),
-			_evancz$url_parser$UrlParser$stringParam('code')),
-		_evancz$url_parser$UrlParser$stringParam('state')));
+			A2(
+				_evancz$url_parser$UrlParser_ops['<?>'],
+				_evancz$url_parser$UrlParser$s(repoName),
+				_evancz$url_parser$UrlParser$stringParam('code')),
+			_evancz$url_parser$UrlParser$stringParam('state')));
+};
 var _user$project$Main$init = function (location) {
-	var cmd = function () {
-		var _p1 = A2(_evancz$url_parser$UrlParser$parsePath, _user$project$Main$redirectParser, location);
-		if (((_p1.ctor === 'Just') && (_p1._0._0.ctor === 'Just')) && (_p1._0._1.ctor === 'Just')) {
-			return _user$project$Main$requestAuthorization(_p1._0._0._0);
+	var nameDecoder = A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string);
+	var contentDecoder = A2(
+		_elm_lang$core$Json_Decode$field,
+		'content',
+		_elm_lang$core$Json_Decode$dict(_elm_lang$core$Json_Decode$string));
+	var notSlash = function (s) {
+		return !_elm_lang$core$Native_Utils.eq(
+			s,
+			_elm_lang$core$Native_Utils.chr('/'));
+	};
+	var repoName = A2(_elm_lang$core$String$filter, notSlash, location.pathname);
+	var _p5 = function () {
+		var _p6 = A2(
+			_evancz$url_parser$UrlParser$parsePath,
+			_user$project$Main$redirectParser(repoName),
+			location);
+		if ((_p6.ctor === 'Just') && (_p6._0._0.ctor === 'Just')) {
+			return {
+				ctor: '_Tuple2',
+				_0: _user$project$Main$requestAuthorization(_p6._0._0._0),
+				_1: _p6._0._1
+			};
 		} else {
-			return _elm_lang$core$Platform_Cmd$none;
+			return {ctor: '_Tuple2', _0: _elm_lang$core$Platform_Cmd$none, _1: _elm_lang$core$Maybe$Nothing};
 		}
 	}();
-	var model = {dependencies: _elm_lang$core$Maybe$Nothing, auth: _elm_lang$core$Maybe$Nothing};
-	return {ctor: '_Tuple2', _0: model, _1: cmd};
+	var cmd = _p5._0;
+	var args = _p5._1;
+	var decodedDeps = A2(
+		_elm_lang$core$Maybe$map,
+		_elm_lang$core$Json_Decode$decodeString(contentDecoder),
+		args);
+	var unstarredDeps = A2(
+		_elm_lang$core$Maybe$map,
+		_elm_lang$core$Result$map(
+			_elm_lang$core$Dict$map(
+				F2(
+					function (k, s) {
+						return false;
+					}))),
+		decodedDeps);
+	var decodedName = A2(
+		_elm_lang$core$Maybe$map,
+		_elm_lang$core$Json_Decode$decodeString(nameDecoder),
+		args);
+	return {
+		ctor: '_Tuple2',
+		_0: {dependencies: unstarredDeps, fileName: decodedName, location: location},
+		_1: cmd
+	};
 };
 var _user$project$Main$main = A2(
 	_elm_lang$navigation$Navigation$program,

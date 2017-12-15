@@ -1,4 +1,9 @@
 
+<head>
+  <title>Thanks Elm!</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
 <div id="main" ></div>
 
 <script type="text/javascript" src="Main.js"></script>
@@ -21,8 +26,10 @@
       // FileReader API is event based. Once a file is selected
       // it fires events. We hook into the `onload` event for our reader.
       reader.onload = (function(event) {
-        console.log(event.target.result);
-        app.ports.fileContentRead.send(event.target.result);
+        var result = {};
+        result.name = file.name;
+        result.content = event.target.result;
+        app.ports.fileContentRead.send(result);
       });
 
       // Connect our FileReader with the file that was selected in our `input` node.
