@@ -1,36 +1,23 @@
-import Html exposing (Html, text, a, div)
-import Html.Attributes exposing (href)
-import Navigation exposing (..)
+import Navigation exposing (program, load)
 import UrlParser as Url exposing ((<?>))
-import Http exposing (..)
-import Result exposing (..)
-import Json.Decode as JD exposing (decodeString, string, dict, field, list)  
-import Dict exposing (keys)
+import Http exposing (send, request, stringBody, expectJson)
+import Json.Decode as JD 
+import Json.Encode as JE 
+import Dict exposing (Dict, keys)
 import Result exposing (map)
 
-import Ports exposing (fileContentRead, fileSelected, FileLoadedData)
+import Ports exposing (..)
 import Msg exposing (..)
-import Model exposing (Model, Repo)
-import View exposing (view)
+import Model exposing (..)
+import View exposing (..)
+
+clientId = "b375bfd8cc7651ac2a7c"
+clientSecret = "4ce0dc66e45e26e03279509a977ab6fc1de54d3f"
 
 type TokenData = TokenData (Maybe String) (Maybe String)
 
-clientId = "8256469ec6a458a2b111"
-clientSecret = "b768bf69c0f44866330780a11d01cbf192ec0727"
-repoName = "oauthElm"
-redirectUri = "https://dc25.github.io/" ++ repoName
-scope = "repo:user"
-state = "w9erwlksjdf"
-
-githubOauthUri = "https://github.com/login/oauth/authorize"
-                     ++ "?client_id=" ++ clientId 
-                     ++ "&redirect_uri=" ++ redirectUri 
-                     ++ "&scope=" ++ scope 
-                     ++ "&state=" ++ state
-
-
-redirectParser : Url.Parser (TokenData -> a) a
-redirectParser = Url.map TokenData 
+redirectParser : String -> Url.Parser (TokenData -> a) a
+redirectParser repoName = Url.map TokenData 
                      (   Url.s repoName 
                      <?> Url.stringParam "code" 
                      <?> Url.stringParam "state"
@@ -39,6 +26,7 @@ redirectParser = Url.map TokenData
 -- https://stackoverflow.com/questions/42150075/cors-issue-on-github-oauth
 -- https://github.com/isaacs/github/issues/330
 -- https://stackoverflow.com/questions/29670703/how-to-use-cors-anywhere-to-reverse-proxy-and-add-cors-headers
+-- https://stackoverflow.com/questions/47076743/cors-anywhere-herokuapp-com-not-working/47085173#47085173
 
 requestAuthorization : String -> Cmd Msg
 requestAuthorization code =
@@ -46,14 +34,15 @@ requestAuthorization code =
                   ++ "&client_secret=" ++ clientSecret 
                   ++ "&code=" ++ code
 
-        corsAnywhere = "https://cors-anywhere.herokuapp.com/"
+        -- corsAnywhere = "https://cors-anywhere.herokuapp.com/"
+        corsAnywhere = "https://cryptic-headland-94862.herokuapp.com/"
 
         rq = request 
                  { method = "POST"
                  , headers = [ (Http.header "Accept" "application/json") ]
                  , url = corsAnywhere ++ "https://github.com/login/oauth/access_token/"
                  , body = stringBody "application/x-www-form-urlencoded" content
-                 , expect = expectJson (field "access_token" JD.string)
+                 , expect = expectJson (JD.field "access_token" JD.string)
                  , timeout = Nothing
                  , withCredentials = False
                  }
@@ -62,33 +51,86 @@ requestAuthorization code =
 
 init : Navigation.Location -> ( Model, Cmd Msg )
 init location =
-    let model = {dependencies=Nothing, auth = Nothing}
-        cmd = case (Url.parsePath redirectParser location) of
-                  Just (TokenData (Just code) (Just _)) 
-                      -> requestAuthorization code
+    let notSlash s = s /= '/'
+        repoName = String.filter notSlash location.pathname
+        (cmd, args) 
+            = case (Url.parsePath (redirectParser repoName) location) of
+                  Just (TokenData (Just code) deps0) 
+                      -> (requestAuthorization code, deps0)
                   _   
-                      -> Cmd.none
-    in (model, cmd)
+                      -> (Cmd.none, Nothing)
+      
+        contentDecoder = (JD.field "content" (JD.dict JD.string))
+        decodedDeps = Maybe.map (JD.decodeString contentDecoder) args
+        unstarredDeps = Maybe.map (Result.map (Dict.map (\k s -> False))) decodedDeps
 
+        nameDecoder = (JD.field "name" JD.string)
+        decodedName = Maybe.map (JD.decodeString nameDecoder) args
+
+    in ({ dependencies=unstarredDeps
+        , fileName=decodedName
+        , location=location
+        } , cmd)
+
+applyStar : String -> String -> Cmd Msg
+applyStar auth dependency = 
+    let rq = request 
+             { method = "PUT"
+             , headers = [ (Http.header "Authorization" ("token " ++ auth)) ]
+             , url = "https://api.github.com/user/starred/" ++ dependency
+             , body = Http.emptyBody
+             , expect = Http.expectStringResponse (\resp -> Ok (toString resp))
+             , timeout = Nothing
+             , withCredentials = False
+             }
+
+    in send (StarSet dependency) rq
+
+applyStars : String -> Model -> Cmd Msg
+applyStars auth model= 
+    case (model.dependencies) of
+        Just (Ok deps) -> Cmd.batch <| List.map (applyStar auth) (keys deps)
+        _ -> Cmd.none
+
+githubOauthUri : Navigation.Location -> String -> String
+githubOauthUri location names 
+    =    "https://github.com/login/oauth/authorize"
+      ++ "?client_id=" ++ clientId 
+      ++ "&redirect_uri=" ++ location.origin ++ location.pathname
+      ++ "&scope=" ++ "public_repo"
+      ++ "&state=" ++ names
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model = 
     case msg of 
-        GetAuthorization (Ok res)
-            -> ({model | auth = Just res} , Cmd.none)
-
         FileSelected ->
             ( model, fileSelected "PackageJSON" )
 
-        FileLoaded fileContents -> 
-            let decodeResult = decodeString (field "dependencies" (dict string)) fileContents
-                names = map keys decodeResult 
-                repos = map (List.map (\nm -> {name=nm, thanked=False})) names
-            in ( {model | dependencies = Just repos }, Cmd.none)
+        FileLoaded jval  -> 
+            let contents = JD.decodeValue (JD.field "content" JD.string) jval
+                fileName = JD.decodeValue (JD.field "name" JD.string) jval
+                deps = Result.andThen (JD.decodeString (JD.field "dependencies" JD.value)) contents
+            in case (fileName,deps) of 
+                   (Ok name, Ok dv) ->
+                       ( model
+                       , load <| githubOauthUri model.location
+                              <| JE.encode 0 (JE.object [ ("name", JE.string name)
+                                                        , ("content",dv)
+                                                        ]
+                                             )
+                       )
+                   _ -> 
+                       ( model , Cmd.none)
+
+        GetAuthorization (Ok auth) ->
+               (model , applyStars auth model)
+
+        StarSet dependency code
+            -> let newDeps = Maybe.map (Result.map (Dict.insert dependency True)) model.dependencies 
+               in ({model | dependencies = newDeps}, Cmd.none)
 
         _ 
             -> (model, Cmd.none)
-
 
 main : Program Never Model Msg
 main =
@@ -100,6 +142,5 @@ main =
         }
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions _ =
     fileContentRead FileLoaded
-

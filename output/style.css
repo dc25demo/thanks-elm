@@ -1,0 +1,18 @@
+input { 
+    font-family: inherit; 
+}
+
+input[type=file], label { 
+   font-size: 24;
+   vertical-align: middle;
+}
+
+.name {
+    color: red;
+}
+
+.flag {
+   width: 24px;
+   height: 24px;
+   vertical-align: middle;
+}

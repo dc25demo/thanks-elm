@@ -1,12 +1,13 @@
 module Model exposing (Model, Repo)
-import Msg exposing (Msg)
 
-type alias Repo =
-    { name : String
-    , thanked : Bool
-    }
+import Http exposing (..)
+import Dict exposing (..)
+import Navigation exposing (Location)
+
+type alias Repo = String
 
 type alias Model =
-    { dependencies : Maybe (Result String (List Repo))
-    , auth: Maybe String
+    { dependencies : Maybe (Result String (Dict Repo Bool))
+    , fileName : Maybe (Result String String)
+    , location : Location
     }

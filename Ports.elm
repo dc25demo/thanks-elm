@@ -1,6 +1,8 @@
 port module Ports exposing (..)
 
-type alias FileLoadedData = String
+import Json.Decode as JD
+
+type alias FileLoadedData = JD.Value
 
 port fileSelected : String -> Cmd msg
 
