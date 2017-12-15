@@ -11,20 +11,20 @@ view : Model -> Html Msg
 view model =
     div [ class "FileWrapper" ]
         ( case model.dependencies of
-              Err e -> 
+              Just (Err e) -> 
                    [ text ("Errors: " ++ toString e) ]
   
-              Ok deps -> 
+              Just (Ok deps) -> 
+                   [ div [] ( (List.map (\d -> let {name,thanked} = d in (div [] [text name])) deps) 
+                            )
+                   ] 
+
+              Nothing -> 
                    [ text "Select an 'elm-package.json' file: "
                    , input [ type_ "file"
                            , id "PackageJSON"
                            , on "change" (JD.succeed FileSelected)
                            ]
                            [] 
-                   , div [] ( (List.map (\d -> let {name,thanked} = d in (div [] [text name])) deps) 
-                            ++ [div [] (List.map text model.gazers)]
-                            )
-                   , div [] [ text (toString model) ]
-
                    ] 
         )

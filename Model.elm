@@ -7,6 +7,6 @@ type alias Repo =
     }
 
 type alias Model =
-    { dependencies : Result String (List Repo)
-    , gazers : List String
+    { dependencies : Maybe (Result String (List Repo))
+    , auth: Maybe String
     }
