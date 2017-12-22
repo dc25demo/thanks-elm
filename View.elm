@@ -59,7 +59,7 @@ showThanked ( d, s ) =
             , label [ for d ] [ text ("Thanking ") ]
             , label [ for d, class "name" ] [ text (user) ]
             , label [ for d ] [ text (" for ") ]
-            , label [ for d, class "name!" ] [ text (repo) ]
+            , label [ for d, class "name" ] [ text (repo) ]
             ]
 
 
