@@ -9883,15 +9883,15 @@ var _user$project$Ports$fileSelected = _elm_lang$core$Native_Platform.outgoingPo
 	});
 var _user$project$Ports$fileContentRead = _elm_lang$core$Native_Platform.incomingPort('fileContentRead', _elm_lang$core$Json_Decode$value);
 
+var _user$project$Msg$UrlChange = function (a) {
+	return {ctor: 'UrlChange', _0: a};
+};
 var _user$project$Msg$StarSet = F2(
 	function (a, b) {
 		return {ctor: 'StarSet', _0: a, _1: b};
 	});
-var _user$project$Msg$GetAuthorization = function (a) {
-	return {ctor: 'GetAuthorization', _0: a};
-};
-var _user$project$Msg$UrlChange = function (a) {
-	return {ctor: 'UrlChange', _0: a};
+var _user$project$Msg$Authorized = function (a) {
+	return {ctor: 'Authorized', _0: a};
 };
 var _user$project$Msg$FileLoaded = function (a) {
 	return {ctor: 'FileLoaded', _0: a};
@@ -10243,36 +10243,8 @@ var _user$project$Main$requestAuthorization = function (code) {
 			timeout: _elm_lang$core$Maybe$Nothing,
 			withCredentials: false
 		});
-	return A2(_elm_lang$http$Http$send, _user$project$Msg$GetAuthorization, rq);
+	return A2(_elm_lang$http$Http$send, _user$project$Msg$Authorized, rq);
 };
-var _user$project$Main$githubOauthUri = F2(
-	function (location, names) {
-		return A2(
-			_elm_lang$core$Basics_ops['++'],
-			'https://github.com/login/oauth/authorize',
-			A2(
-				_elm_lang$core$Basics_ops['++'],
-				'?client_id=',
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					_user$project$Main$clientId,
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						'&redirect_uri=',
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							location.origin,
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								location.pathname,
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									'&scope=',
-									A2(
-										_elm_lang$core$Basics_ops['++'],
-										'public_repo',
-										A2(_elm_lang$core$Basics_ops['++'], '&state=', names)))))))));
-	});
 var _user$project$Main$update = F2(
 	function (msg, model) {
 		var _p2 = msg;
@@ -10287,50 +10259,79 @@ var _user$project$Main$update = F2(
 					};
 				case 'FileLoaded':
 					var _p4 = _p2._0;
-					var fileName = A2(
-						_elm_lang$core$Json_Decode$decodeValue,
-						A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string),
-						_p4);
+					var encode = F2(
+						function (name, deps) {
+							return A2(
+								_elm_lang$core$Json_Encode$encode,
+								0,
+								_elm_lang$core$Json_Encode$object(
+									{
+										ctor: '::',
+										_0: {
+											ctor: '_Tuple2',
+											_0: 'name',
+											_1: _elm_lang$core$Json_Encode$string(name)
+										},
+										_1: {
+											ctor: '::',
+											_0: {ctor: '_Tuple2', _0: 'content', _1: deps},
+											_1: {ctor: '[]'}
+										}
+									}));
+						});
+					var authUri = F3(
+						function (location, name, deps) {
+							return A2(
+								_elm_lang$core$Basics_ops['++'],
+								'https://github.com/login/oauth/authorize',
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									'?client_id=',
+									A2(
+										_elm_lang$core$Basics_ops['++'],
+										_user$project$Main$clientId,
+										A2(
+											_elm_lang$core$Basics_ops['++'],
+											'&redirect_uri=',
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												location.origin,
+												A2(
+													_elm_lang$core$Basics_ops['++'],
+													location.pathname,
+													A2(
+														_elm_lang$core$Basics_ops['++'],
+														'&scope=public_repo',
+														A2(
+															_elm_lang$core$Basics_ops['++'],
+															'&state=',
+															A2(encode, name, deps)))))))));
+						});
 					var contents = A2(
 						_elm_lang$core$Json_Decode$decodeValue,
 						A2(_elm_lang$core$Json_Decode$field, 'content', _elm_lang$core$Json_Decode$string),
 						_p4);
-					var deps = A2(
+					var depencencies = A2(
 						_elm_lang$core$Result$andThen,
 						_elm_lang$core$Json_Decode$decodeString(
 							A2(_elm_lang$core$Json_Decode$field, 'dependencies', _elm_lang$core$Json_Decode$value)),
 						contents);
-					var _p3 = {ctor: '_Tuple2', _0: fileName, _1: deps};
+					var fileName = A2(
+						_elm_lang$core$Json_Decode$decodeValue,
+						A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string),
+						_p4);
+					var _p3 = {ctor: '_Tuple2', _0: fileName, _1: depencencies};
 					if (((_p3.ctor === '_Tuple2') && (_p3._0.ctor === 'Ok')) && (_p3._1.ctor === 'Ok')) {
 						return {
 							ctor: '_Tuple2',
 							_0: model,
 							_1: _elm_lang$navigation$Navigation$load(
-								A2(
-									_user$project$Main$githubOauthUri,
-									model.location,
-									A2(
-										_elm_lang$core$Json_Encode$encode,
-										0,
-										_elm_lang$core$Json_Encode$object(
-											{
-												ctor: '::',
-												_0: {
-													ctor: '_Tuple2',
-													_0: 'name',
-													_1: _elm_lang$core$Json_Encode$string(_p3._0._0)
-												},
-												_1: {
-													ctor: '::',
-													_0: {ctor: '_Tuple2', _0: 'content', _1: _p3._1._0},
-													_1: {ctor: '[]'}
-												}
-											}))))
+								A3(authUri, model.location, _p3._0._0, _p3._1._0))
 						};
 					} else {
 						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					}
-				case 'GetAuthorization':
+				case 'Authorized':
 					if (_p2._0.ctor === 'Ok') {
 						return {
 							ctor: '_Tuple2',

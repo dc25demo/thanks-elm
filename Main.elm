@@ -67,7 +67,7 @@ requestAuthorization code =
                 , withCredentials = False
                 }
     in
-        send GetAuthorization rq
+        send Authorized rq
 
 
 init : Navigation.Location -> ( Model, Cmd Msg )
@@ -137,19 +137,6 @@ applyStars auth model =
             Cmd.none
 
 
-githubOauthUri : Navigation.Location -> String -> String
-githubOauthUri location names =
-    "https://github.com/login/oauth/authorize"
-        ++ "?client_id="
-        ++ clientId
-        ++ "&redirect_uri="
-        ++ location.origin
-        ++ location.pathname
-        ++ "&scope="
-        ++ "public_repo"
-        ++ "&state="
-        ++ names
-
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -159,32 +146,43 @@ update msg model =
 
         FileLoaded jval ->
             let
-                contents =
-                    JD.decodeValue (JD.field "content" JD.string) jval
-
+                -- get file name and content passed through port.
                 fileName =
                     JD.decodeValue (JD.field "name" JD.string) jval
 
-                deps =
+                contents =
+                    JD.decodeValue (JD.field "content" JD.string) jval
+
+                -- get dependencies from content
+                depencencies =
                     Result.andThen (JD.decodeString (JD.field "dependencies" JD.value)) contents
-            in
-                case ( fileName, deps ) of
-                    ( Ok name, Ok dv ) ->
-                        ( model
-                        , load <|
-                            githubOauthUri model.location <|
-                                JE.encode 0
-                                    (JE.object
-                                        [ ( "name", JE.string name )
-                                        , ( "content", dv )
-                                        ]
-                                    )
+
+                encode name deps = 
+                    JE.encode 0
+                        (JE.object
+                            [ ( "name", JE.string name )
+                            , ( "content", deps )
+                            ]
                         )
+
+                authUri location name deps =
+                    "https://github.com/login/oauth/authorize"
+                        ++ "?client_id=" ++ clientId
+                        ++ "&redirect_uri=" ++ location.origin ++ location.pathname
+                        ++ "&scope=public_repo"
+                        ++ "&state=" ++ (encode name deps)
+
+            in
+                case ( fileName, depencencies ) of
+                    -- Send valid name and dependencies to github.com ; 
+                    -- Returned via redirect along with authorization code.
+                    ( Ok name, Ok deps ) ->
+                        ( model , load (authUri model.location name deps))
 
                     _ ->
                         ( model, Cmd.none )
 
-        GetAuthorization (Ok auth) ->
+        Authorized (Ok auth) ->
             ( model, applyStars auth model )
 
         StarSet dependency code ->

@@ -8,6 +8,6 @@ import Navigation exposing (Location)
 type Msg
     = FileSelected
     | FileLoaded FileLoadedData
-    | UrlChange Location
-    | GetAuthorization (Result Error String)
+    | Authorized (Result Error String)
     | StarSet String (Result Error String)
+    | UrlChange Location
