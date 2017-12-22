@@ -10106,16 +10106,34 @@ var _user$project$View$view = function (model) {
 									});
 							} else {
 								return A2(
-									_elm_lang$html$Html$label,
+									_elm_lang$html$Html$div,
 									{ctor: '[]'},
 									{
 										ctor: '::',
-										_0: _elm_lang$html$Html$text(
-											A2(
-												_elm_lang$core$Basics_ops['++'],
-												'Thanking everyone who helped create and maintain your Elm project\'s dependences ( as found in file: \"',
-												A2(_elm_lang$core$Basics_ops['++'], _p5._0._0, '\" )...'))),
-										_1: {ctor: '[]'}
+										_0: A2(
+											_elm_lang$html$Html$label,
+											{ctor: '[]'},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text(
+													A2(
+														_elm_lang$core$Basics_ops['++'],
+														'Thanking everyone who helped create and maintain your Elm project\'s dependences ( as found in file: \"',
+														A2(_elm_lang$core$Basics_ops['++'], _p5._0._0, '\" )...'))),
+												_1: {ctor: '[]'}
+											}),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$label,
+												{ctor: '[]'},
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html$text('Done'),
+													_1: {ctor: '[]'}
+												}),
+											_1: {ctor: '[]'}
+										}
 									});
 							}
 						} else {
