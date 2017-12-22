@@ -10240,8 +10240,8 @@ var _user$project$Main$applyStars = F2(
 			return _elm_lang$core$Platform_Cmd$none;
 		}
 	});
-var _user$project$Main$clientSecret = '4ce0dc66e45e26e03279509a977ab6fc1de54d3f';
-var _user$project$Main$clientId = 'b375bfd8cc7651ac2a7c';
+var _user$project$Main$clientSecret = '1ad91f7bb53f9d9e37b9b8927f446b41c615126e';
+var _user$project$Main$clientId = '167f916723e5ae13e9fe';
 var _user$project$Main$requestAuthorization = function (code) {
 	var corsAnywhere = 'https://cryptic-headland-94862.herokuapp.com/';
 	var content = A2(
