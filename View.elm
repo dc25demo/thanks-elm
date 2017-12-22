@@ -84,7 +84,9 @@ view model =
 
                 Just (Ok deps) ->
                     [ div [] (List.map showThanked (Dict.toList deps)) ]
-                    ++ [ div [] [label [] [text "Done"] ] ]
+                    ++ if List.all identity (Dict.values deps) 
+                       then [ div [] [label [] [text "Done"] ] ]
+                       else []
 
 
 
