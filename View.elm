@@ -83,9 +83,13 @@ view model =
                     [ label [] [ text ("Errors: " ++ toString e) ] ]
 
                 Just (Ok deps) ->
-                    [ div [] (List.map showThanked (Dict.toList deps)) ]
-                    ++ if List.all identity (Dict.values deps) 
-                       then [ div [] [label [] [text "Done"] ] ]
+
+                    ( div [] (List.map showThanked (Dict.toList deps)) )
+
+                    :: if List.all identity (Dict.values deps) 
+                       then [ br [] []
+                            , div [] 
+                                  [ label [] [text "All done, thanks for being grateful!"] ] ]
                        else []
 
 
