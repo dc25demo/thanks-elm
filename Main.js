@@ -10146,6 +10146,7 @@ var _user$project$View$view = function (model) {
 									_1: {ctor: '[]'}
 								};
 							} else {
+								var _p7 = _p6._0._0;
 								return A2(
 									_elm_lang$core$Basics_ops['++'],
 									{
@@ -10156,10 +10157,13 @@ var _user$project$View$view = function (model) {
 											A2(
 												_elm_lang$core$List$map,
 												_user$project$View$showThanked,
-												_elm_lang$core$Dict$toList(_p6._0._0))),
+												_elm_lang$core$Dict$toList(_p7))),
 										_1: {ctor: '[]'}
 									},
-									{
+									A2(
+										_elm_lang$core$List$all,
+										_elm_lang$core$Basics$identity,
+										_elm_lang$core$Dict$values(_p7)) ? {
 										ctor: '::',
 										_0: A2(
 											_elm_lang$html$Html$div,
@@ -10177,7 +10181,7 @@ var _user$project$View$view = function (model) {
 												_1: {ctor: '[]'}
 											}),
 										_1: {ctor: '[]'}
-									});
+									} : {ctor: '[]'});
 							}
 						} else {
 							return {ctor: '[]'};
