@@ -10009,7 +10009,7 @@ var _user$project$View$showThanked = function (_p0) {
 									_0: _elm_lang$html$Html_Attributes$for(_p4),
 									_1: {
 										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$class('name'),
+										_0: _elm_lang$html$Html_Attributes$class('name!'),
 										_1: {ctor: '[]'}
 									}
 								},
@@ -10114,7 +10114,7 @@ var _user$project$View$view = function (model) {
 											A2(
 												_elm_lang$core$Basics_ops['++'],
 												'Thanking everyone who helped create and maintain your Elm project\'s dependences ( as found in file: \"',
-												A2(_elm_lang$core$Basics_ops['++'], _p5._0._0, '\" )'))),
+												A2(_elm_lang$core$Basics_ops['++'], _p5._0._0, '\" ) ...'))),
 										_1: {ctor: '[]'}
 									});
 							}

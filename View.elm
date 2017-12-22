@@ -46,7 +46,7 @@ showThanked (d, s)
              , label [for d] [text ("Thanking ") ]
              , label [for d, class "name"] [text (user) ]
              , label [for d] [text (" for ") ]
-             , label [for d, class "name"] [text (repo) ]
+             , label [for d, class "name!"] [text (repo) ]
              ]
 
 view : Model -> Html Msg
@@ -58,7 +58,7 @@ view model
                      Just (Err e) ->
                           div [] [ label [] [text ("Errors: " ++ toString e)] ]
                      Just (Ok fileName) -> 
-                          label [] [ text ("Thanking everyone who helped create and maintain your Elm project's dependences ( as found in file: \"" ++ fileName ++ "\" )") ]
+                          label [] [ text ("Thanking everyone who helped create and maintain your Elm project's dependences ( as found in file: \"" ++ fileName ++ "\" ) ...") ]
                      Nothing -> div [][]
                )
             :: case model.dependencies of
