@@ -14,8 +14,8 @@ import Model exposing (..)
 import View exposing (..)
 
 
-clientId = "b375bfd8cc7651ac2a7c"
-clientSecret = "4ce0dc66e45e26e03279509a977ab6fc1de54d3f"
+clientId = "167f916723e5ae13e9fe"
+clientSecret = "1ad91f7bb53f9d9e37b9b8927f446b41c615126e"
 
 
 type TokenData = TokenData (Maybe String) (Maybe String)
