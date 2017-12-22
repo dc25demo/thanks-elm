@@ -7,22 +7,18 @@ import Json.Decode as JD
 import Json.Encode as JE
 import Dict exposing (Dict, keys)
 import Result exposing (map)
+
 import Ports exposing (..)
 import Msg exposing (..)
 import Model exposing (..)
 import View exposing (..)
 
 
-clientId =
-    "b375bfd8cc7651ac2a7c"
+clientId = "b375bfd8cc7651ac2a7c"
+clientSecret = "4ce0dc66e45e26e03279509a977ab6fc1de54d3f"
 
 
-clientSecret =
-    "4ce0dc66e45e26e03279509a977ab6fc1de54d3f"
-
-
-type TokenData
-    = TokenData (Maybe String) (Maybe String)
+type TokenData = TokenData (Maybe String) (Maybe String)
 
 
 redirectParser : String -> Url.Parser (TokenData -> a) a
@@ -32,7 +28,6 @@ redirectParser repoName =
             <?> Url.stringParam "code"
             <?> Url.stringParam "state"
         )
-
 
 
 -- https://stackoverflow.com/questions/42150075/cors-issue-on-github-oauth
