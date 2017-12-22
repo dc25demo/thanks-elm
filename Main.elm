@@ -52,6 +52,7 @@ requestAuthorization code =
                 ++ "&code="
                 ++ code
 
+        -- Both "cors anywhere" sites work but "headland" one is more reliable.
         -- corsAnywhere = "https://cors-anywhere.herokuapp.com/"
         corsAnywhere =
             "https://cryptic-headland-94862.herokuapp.com/"
@@ -183,9 +184,11 @@ update msg model =
                         ( model, Cmd.none )
 
         Authorized (Ok auth) ->
+            -- response recieved from github.com access token request
             ( model, applyStars auth model )
 
         StarSet dependency code ->
+            -- response recieved from api.github.com after setting star.
             let
                 newDeps =
                     Maybe.map (Result.map (Dict.insert dependency True)) model.dependencies
