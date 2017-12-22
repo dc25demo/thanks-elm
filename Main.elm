@@ -146,7 +146,7 @@ update msg model =
 
         FileLoaded jval ->
             let
-                -- get file name and content passed through port.
+                -- get file name and content that were received through port.
                 fileName =
                     JD.decodeValue (JD.field "name" JD.string) jval
 
