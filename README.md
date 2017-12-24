@@ -1,10 +1,11 @@
 # thanks-elm
 
+🌟 Say thanks to everyone who helps build and maintain your Elm dependencies
+
 ## CAUTION
 
-When you use this app, you will be prompted by github to allow the app to work on your behalf.  This is necessary because the app will be starring repositories in your name.  Always think twice before granting such permission.  In fact, the best use for this app may be as a reference for others who wish to use oauth to work with the github API from within an Elm app.
+When you use this app, you will be prompted by github to allow the app to work on your behalf.  This is necessary because the app will be starring repositories in your name.  **Always think twice before granting such permission.**  In fact, the best use for this app may be as a reference for others who wish to use oauth to work with the github API from within an Elm app.
 
-🌟 Say thanks to everyone who helps build and maintain your Elm dependencies
 
 ![Example gif](https://github.com/dc25demo/thanks-elm/raw/master/thanksElmVideoB854.gif)
 
