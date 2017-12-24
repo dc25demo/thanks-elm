@@ -9900,7 +9900,7 @@ var _user$project$Msg$FileSelected = {ctor: 'FileSelected'};
 
 var _user$project$Model$Model = F3(
 	function (a, b, c) {
-		return {dependencies: a, fileName: b, location: c};
+		return {projectData: a, location: b, errorMessage: c};
 	});
 
 var _user$project$View$thankedCheckbox = F2(
@@ -10079,56 +10079,25 @@ var _user$project$View$view = function (model) {
 					_elm_lang$html$Html$br,
 					{ctor: '[]'},
 					{ctor: '[]'}),
-				_1: {
-					ctor: '::',
-					_0: function () {
-						var _p5 = model.fileName;
-						if (_p5.ctor === 'Just') {
-							if (_p5._0.ctor === 'Err') {
-								return A2(
-									_elm_lang$html$Html$div,
-									{ctor: '[]'},
-									{
-										ctor: '::',
-										_0: A2(
-											_elm_lang$html$Html$label,
-											{ctor: '[]'},
-											{
-												ctor: '::',
-												_0: _elm_lang$html$Html$text(
-													A2(
-														_elm_lang$core$Basics_ops['++'],
-														'Errors: ',
-														_elm_lang$core$Basics$toString(_p5._0._0))),
-												_1: {ctor: '[]'}
-											}),
-										_1: {ctor: '[]'}
-									});
-							} else {
-								return A2(
-									_elm_lang$html$Html$label,
-									{ctor: '[]'},
-									{
-										ctor: '::',
-										_0: _elm_lang$html$Html$text(
-											A2(
-												_elm_lang$core$Basics_ops['++'],
-												'Thanking everyone who helped create and maintain your Elm project\'s dependences ( as found in file: \"',
-												A2(_elm_lang$core$Basics_ops['++'], _p5._0._0, '\" ) ...'))),
-										_1: {ctor: '[]'}
-									});
-							}
-						} else {
-							return A2(
-								_elm_lang$html$Html$div,
+				_1: function () {
+					var _p5 = {ctor: '_Tuple2', _0: model.errorMessage, _1: model.projectData};
+					if (_p5._0.ctor === 'Just') {
+						return {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$label,
 								{ctor: '[]'},
-								{ctor: '[]'});
-						}
-					}(),
-					_1: function () {
-						var _p6 = model.dependencies;
-						if (_p6.ctor === 'Just') {
-							if (_p6._0.ctor === 'Err') {
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text(
+										A2(_elm_lang$core$Basics_ops['++'], 'Processing error: ', _p5._0._0)),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						};
+					} else {
+						if (_p5._1.ctor === 'Just') {
+							if (_p5._1._0.ctor === 'Err') {
 								return {
 									ctor: '::',
 									_0: A2(
@@ -10139,59 +10108,74 @@ var _user$project$View$view = function (model) {
 											_0: _elm_lang$html$Html$text(
 												A2(
 													_elm_lang$core$Basics_ops['++'],
-													'Errors: ',
-													_elm_lang$core$Basics$toString(_p6._0._0))),
+													'File read error: ',
+													_elm_lang$core$Basics$toString(_p5._1._0._0))),
 											_1: {ctor: '[]'}
 										}),
 									_1: {ctor: '[]'}
 								};
 							} else {
-								var _p7 = _p6._0._0;
+								var _p6 = _p5._1._0._0._1;
 								return {
 									ctor: '::',
 									_0: A2(
-										_elm_lang$html$Html$div,
+										_elm_lang$html$Html$label,
 										{ctor: '[]'},
-										A2(
-											_elm_lang$core$List$map,
-											_user$project$View$showThanked,
-											_elm_lang$core$Dict$toList(_p7))),
-									_1: A2(
-										_elm_lang$core$List$all,
-										_elm_lang$core$Basics$identity,
-										_elm_lang$core$Dict$values(_p7)) ? {
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text(
+												A2(
+													_elm_lang$core$Basics_ops['++'],
+													'Thanking everyone who helped create and maintain your Elm project\'s dependences ( as found in file: \"',
+													A2(_elm_lang$core$Basics_ops['++'], _p5._1._0._0._0, '\" ) ...'))),
+											_1: {ctor: '[]'}
+										}),
+									_1: {
 										ctor: '::',
 										_0: A2(
-											_elm_lang$html$Html$br,
+											_elm_lang$html$Html$div,
 											{ctor: '[]'},
-											{ctor: '[]'}),
-										_1: {
+											A2(
+												_elm_lang$core$List$map,
+												_user$project$View$showThanked,
+												_elm_lang$core$Dict$toList(_p6))),
+										_1: A2(
+											_elm_lang$core$List$all,
+											_elm_lang$core$Basics$identity,
+											_elm_lang$core$Dict$values(_p6)) ? {
 											ctor: '::',
 											_0: A2(
-												_elm_lang$html$Html$div,
+												_elm_lang$html$Html$br,
 												{ctor: '[]'},
-												{
-													ctor: '::',
-													_0: A2(
-														_elm_lang$html$Html$label,
-														{ctor: '[]'},
-														{
-															ctor: '::',
-															_0: _elm_lang$html$Html$text('All done, thanks for being grateful!'),
-															_1: {ctor: '[]'}
-														}),
-													_1: {ctor: '[]'}
-												}),
-											_1: {ctor: '[]'}
-										}
-									} : {ctor: '[]'}
+												{ctor: '[]'}),
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$div,
+													{ctor: '[]'},
+													{
+														ctor: '::',
+														_0: A2(
+															_elm_lang$html$Html$label,
+															{ctor: '[]'},
+															{
+																ctor: '::',
+																_0: _elm_lang$html$Html$text('All done, thanks for being grateful!'),
+																_1: {ctor: '[]'}
+															}),
+														_1: {ctor: '[]'}
+													}),
+												_1: {ctor: '[]'}
+											}
+										} : {ctor: '[]'}
+									}
 								};
 							}
 						} else {
 							return {ctor: '[]'};
 						}
-					}()
-				}
+					}
+				}()
 			}
 		});
 };
@@ -10229,13 +10213,13 @@ var _user$project$Main$applyStar = F2(
 	});
 var _user$project$Main$applyStars = F2(
 	function (auth, model) {
-		var _p1 = model.dependencies;
-		if ((_p1.ctor === 'Just') && (_p1._0.ctor === 'Ok')) {
+		var _p1 = model.projectData;
+		if (((_p1.ctor === 'Just') && (_p1._0.ctor === 'Ok')) && (_p1._0._0.ctor === '_Tuple2')) {
 			return _elm_lang$core$Platform_Cmd$batch(
 				A2(
 					_elm_lang$core$List$map,
 					_user$project$Main$applyStar(auth),
-					_elm_lang$core$Dict$keys(_p1._0._0)));
+					_elm_lang$core$Dict$keys(_p1._0._0._1)));
 		} else {
 			return _elm_lang$core$Platform_Cmd$none;
 		}
@@ -10277,117 +10261,123 @@ var _user$project$Main$requestAuthorization = function (code) {
 var _user$project$Main$update = F2(
 	function (msg, model) {
 		var _p2 = msg;
-		_v1_4:
-		do {
-			switch (_p2.ctor) {
-				case 'FileSelected':
+		switch (_p2.ctor) {
+			case 'FileSelected':
+				return {
+					ctor: '_Tuple2',
+					_0: model,
+					_1: _user$project$Ports$fileSelected('PackageJSON')
+				};
+			case 'FileLoaded':
+				var _p4 = _p2._0;
+				var encode = F2(
+					function (name, deps) {
+						return A2(
+							_elm_lang$core$Json_Encode$encode,
+							0,
+							_elm_lang$core$Json_Encode$object(
+								{
+									ctor: '::',
+									_0: {
+										ctor: '_Tuple2',
+										_0: 'name',
+										_1: _elm_lang$core$Json_Encode$string(name)
+									},
+									_1: {
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'content', _1: deps},
+										_1: {ctor: '[]'}
+									}
+								}));
+					});
+				var authUri = F3(
+					function (location, name, deps) {
+						return A2(
+							_elm_lang$core$Basics_ops['++'],
+							'https://github.com/login/oauth/authorize',
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								'?client_id=',
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									_user$project$Main$clientId,
+									A2(
+										_elm_lang$core$Basics_ops['++'],
+										'&redirect_uri=',
+										A2(
+											_elm_lang$core$Basics_ops['++'],
+											location.origin,
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												location.pathname,
+												A2(
+													_elm_lang$core$Basics_ops['++'],
+													'&scope=public_repo',
+													A2(
+														_elm_lang$core$Basics_ops['++'],
+														'&state=',
+														A2(encode, name, deps)))))))));
+					});
+				var contents = A2(
+					_elm_lang$core$Json_Decode$decodeValue,
+					A2(_elm_lang$core$Json_Decode$field, 'content', _elm_lang$core$Json_Decode$string),
+					_p4);
+				var depencencies = A2(
+					_elm_lang$core$Result$andThen,
+					_elm_lang$core$Json_Decode$decodeString(
+						A2(_elm_lang$core$Json_Decode$field, 'dependencies', _elm_lang$core$Json_Decode$value)),
+					contents);
+				var fileName = A2(
+					_elm_lang$core$Json_Decode$decodeValue,
+					A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string),
+					_p4);
+				var _p3 = {ctor: '_Tuple2', _0: fileName, _1: depencencies};
+				if (((_p3.ctor === '_Tuple2') && (_p3._0.ctor === 'Ok')) && (_p3._1.ctor === 'Ok')) {
 					return {
 						ctor: '_Tuple2',
 						_0: model,
-						_1: _user$project$Ports$fileSelected('PackageJSON')
+						_1: _elm_lang$navigation$Navigation$load(
+							A3(authUri, model.location, _p3._0._0, _p3._1._0))
 					};
-				case 'FileLoaded':
-					var _p4 = _p2._0;
-					var encode = F2(
-						function (name, deps) {
-							return A2(
-								_elm_lang$core$Json_Encode$encode,
-								0,
-								_elm_lang$core$Json_Encode$object(
-									{
-										ctor: '::',
-										_0: {
-											ctor: '_Tuple2',
-											_0: 'name',
-											_1: _elm_lang$core$Json_Encode$string(name)
-										},
-										_1: {
-											ctor: '::',
-											_0: {ctor: '_Tuple2', _0: 'content', _1: deps},
-											_1: {ctor: '[]'}
-										}
-									}));
-						});
-					var authUri = F3(
-						function (location, name, deps) {
-							return A2(
-								_elm_lang$core$Basics_ops['++'],
-								'https://github.com/login/oauth/authorize',
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									'?client_id=',
-									A2(
-										_elm_lang$core$Basics_ops['++'],
-										_user$project$Main$clientId,
-										A2(
-											_elm_lang$core$Basics_ops['++'],
-											'&redirect_uri=',
-											A2(
-												_elm_lang$core$Basics_ops['++'],
-												location.origin,
-												A2(
-													_elm_lang$core$Basics_ops['++'],
-													location.pathname,
-													A2(
-														_elm_lang$core$Basics_ops['++'],
-														'&scope=public_repo',
-														A2(
-															_elm_lang$core$Basics_ops['++'],
-															'&state=',
-															A2(encode, name, deps)))))))));
-						});
-					var contents = A2(
-						_elm_lang$core$Json_Decode$decodeValue,
-						A2(_elm_lang$core$Json_Decode$field, 'content', _elm_lang$core$Json_Decode$string),
-						_p4);
-					var depencencies = A2(
-						_elm_lang$core$Result$andThen,
-						_elm_lang$core$Json_Decode$decodeString(
-							A2(_elm_lang$core$Json_Decode$field, 'dependencies', _elm_lang$core$Json_Decode$value)),
-						contents);
-					var fileName = A2(
-						_elm_lang$core$Json_Decode$decodeValue,
-						A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string),
-						_p4);
-					var _p3 = {ctor: '_Tuple2', _0: fileName, _1: depencencies};
-					if (((_p3.ctor === '_Tuple2') && (_p3._0.ctor === 'Ok')) && (_p3._1.ctor === 'Ok')) {
-						return {
-							ctor: '_Tuple2',
-							_0: model,
-							_1: _elm_lang$navigation$Navigation$load(
-								A3(authUri, model.location, _p3._0._0, _p3._1._0))
-						};
-					} else {
-						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-					}
-				case 'Authorized':
-					if (_p2._0.ctor === 'Ok') {
-						return {
-							ctor: '_Tuple2',
-							_0: model,
-							_1: A2(_user$project$Main$applyStars, _p2._0._0, model)
-						};
-					} else {
-						break _v1_4;
-					}
-				case 'StarSet':
-					var newDeps = A2(
-						_elm_lang$core$Maybe$map,
-						_elm_lang$core$Result$map(
-							A2(_elm_lang$core$Dict$insert, _p2._0, true)),
-						model.dependencies);
+				} else {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				}
+			case 'Authorized':
+				if (_p2._0.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: model,
+						_1: A2(_user$project$Main$applyStars, _p2._0._0, model)
+					};
+				} else {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{dependencies: newDeps}),
+							{
+								errorMessage: _elm_lang$core$Maybe$Just(
+									_elm_lang$core$Basics$toString(_p2._0._0))
+							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
-				default:
-					break _v1_4;
-			}
-		} while(false);
-		return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				}
+			case 'StarSet':
+				var newProjectData = A2(
+					_elm_lang$core$Maybe$map,
+					_elm_lang$core$Result$map(
+						_elm_lang$core$Tuple$mapSecond(
+							A2(_elm_lang$core$Dict$insert, _p2._0, true))),
+					model.projectData);
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{projectData: newProjectData}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			default:
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+		}
 	});
 var _user$project$Main$TokenData = F2(
 	function (a, b) {
@@ -10438,7 +10428,7 @@ var _user$project$Main$init = function (location) {
 		_elm_lang$core$Maybe$map,
 		_elm_lang$core$Json_Decode$decodeString(contentDecoder),
 		args);
-	var unstarredDeps = A2(
+	var dependencies = A2(
 		_elm_lang$core$Maybe$map,
 		_elm_lang$core$Result$map(
 			_elm_lang$core$Dict$map(
@@ -10447,13 +10437,22 @@ var _user$project$Main$init = function (location) {
 						return false;
 					}))),
 		decodedDeps);
-	var decodedName = A2(
+	var fileName = A2(
 		_elm_lang$core$Maybe$map,
 		_elm_lang$core$Json_Decode$decodeString(nameDecoder),
 		args);
+	var projectData = A3(
+		_elm_lang$core$Maybe$map2,
+		_elm_lang$core$Result$map2(
+			F2(
+				function (v0, v1) {
+					return {ctor: '_Tuple2', _0: v0, _1: v1};
+				})),
+		fileName,
+		dependencies);
 	return {
 		ctor: '_Tuple2',
-		_0: {dependencies: unstarredDeps, fileName: decodedName, location: location},
+		_0: {projectData: projectData, location: location, errorMessage: _elm_lang$core$Maybe$Nothing},
 		_1: cmd
 	};
 };
