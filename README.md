@@ -10,7 +10,7 @@ When you use this web app, you will be prompted by github to allow the web app t
 ![Example gif](https://github.com/dc25demo/thanks-elm/raw/master/thanksElmVideoB854.gif)
 
 ## Motivation
-Inspired by [this command line utility, "elm-thanks"](https://github.com/zwilias/elm-thanks) .  I wanted to see what it would take to implement the same functionality as a web app written in Elm.
+After seeing [this command line utility, "elm-thanks"](https://github.com/zwilias/elm-thanks),  I wanted to see what it would take to implement the same functionality as a web app written in Elm.
 
 ## Purpose
 As with "elm-thanks", the idea is to express our gratitude to the creators and maintainers of our dependencies by starring the github repositories. 
