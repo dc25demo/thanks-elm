@@ -68,32 +68,23 @@ view model =
     div []
         (chooseFile
             :: (br [] [])
-            :: (case model.fileName of
-                    Just (Err e) ->
-                        div [] [ label [] [ text ("Errors: " ++ toString e) ] ]
+            :: (case (model.errorMessage, model.projectData)  of
+                    (Just e, _ ) ->
+                        [ label [] [ text ("Processing error: " ++ e) ] ]
 
-                    Just (Ok fileName) ->
-                        label [] [ text ("Thanking everyone who helped create and maintain your Elm project's dependences ( as found in file: \"" ++ fileName ++ "\" ) ...") ]
+                    (_, Just (Err e)) ->
+                        [ label [] [ text ("File read error: " ++ toString e) ] ]
 
-                    Nothing ->
-                        div [] []
+                    (Nothing, Just (Ok (fileName, deps))) ->
+                           ( label [] [ text ("Thanking everyone who helped create and maintain your Elm project's dependences ( as found in file: \"" ++ fileName ++ "\" ) ...") ] )
+                        :: ( div [] (List.map showThanked (Dict.toList deps)) )
+                        :: if List.all identity (Dict.values deps) 
+                           then [ br [] []
+                                , div [] 
+                                      [ label [] [text "All done, thanks for being grateful!"] ] ]
+                           else []
+
+                    (Nothing, Nothing) -> []
+
                )
-            :: case model.dependencies of
-                Just (Err e) ->
-                    [ label [] [ text ("Errors: " ++ toString e) ] ]
-
-                Just (Ok deps) ->
-
-                    ( div [] (List.map showThanked (Dict.toList deps)) )
-
-                    :: if List.all identity (Dict.values deps) 
-                       then [ br [] []
-                            , div [] 
-                                  [ label [] [text "All done, thanks for being grateful!"] ] ]
-                       else []
-
-
-
-                Nothing ->
-                    []
         )

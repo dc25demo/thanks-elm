@@ -40,12 +40,9 @@ requestAuthorization : String -> Cmd Msg
 requestAuthorization code =
     let
         content =
-            "client_id="
-                ++ clientId
-                ++ "&client_secret="
-                ++ clientSecret
-                ++ "&code="
-                ++ code
+            "client_id=" ++ clientId
+         ++ "&client_secret=" ++ clientSecret
+         ++ "&code=" ++ code
 
         -- Both "cors anywhere" sites work but "headland" one is more reliable.
         -- corsAnywhere = "https://cors-anywhere.herokuapp.com/"
@@ -89,18 +86,20 @@ init location =
         decodedDeps =
             Maybe.map (JD.decodeString contentDecoder) args
 
-        unstarredDeps =
+        dependencies =
             Maybe.map (Result.map (Dict.map (\k s -> False))) decodedDeps
 
         nameDecoder =
             (JD.field "name" JD.string)
 
-        decodedName =
+        fileName =
             Maybe.map (JD.decodeString nameDecoder) args
+
+        projectData = Maybe.map2 (Result.map2 (,)) fileName dependencies
     in
-        ( { dependencies = unstarredDeps
-          , fileName = decodedName
+        ( { projectData = projectData
           , location = location
+          , errorMessage = Nothing
           }
         , cmd
         )
@@ -125,9 +124,9 @@ applyStar auth dependency =
 
 applyStars : String -> Model -> Cmd Msg
 applyStars auth model =
-    case (model.dependencies) of
-        Just (Ok deps) ->
-            Cmd.batch <| List.map (applyStar auth) (keys deps)
+    case (model.projectData) of
+        Just (Ok (_, dependencies)) ->
+            Cmd.batch <| List.map (applyStar auth) (keys dependencies)
 
         _ ->
             Cmd.none
@@ -182,15 +181,19 @@ update msg model =
             -- response recieved from github.com access token request
             ( model, applyStars auth model )
 
+        Authorized (Err errorMessage) ->
+            -- response recieved from github.com access token request
+            ( { model | errorMessage = Just (toString errorMessage) }, Cmd.none)
+
         StarSet dependency code ->
             -- response recieved from api.github.com after setting star.
             let
-                newDeps =
-                    Maybe.map (Result.map (Dict.insert dependency True)) model.dependencies
+                newProjectData =
+                    Maybe.map (Result.map (Tuple.mapSecond (Dict.insert dependency True ))) model.projectData
             in
-                ( { model | dependencies = newDeps }, Cmd.none )
+                ( { model | projectData = newProjectData }, Cmd.none )
 
-        _ ->
+        UrlChange _ ->
             ( model, Cmd.none )
 
 

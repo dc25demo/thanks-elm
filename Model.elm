@@ -10,7 +10,7 @@ type alias Repo =
 
 
 type alias Model =
-    { dependencies : Maybe (Result String (Dict Repo Bool))
-    , fileName : Maybe (Result String String)
+    { projectData : Maybe (Result String (String, Dict Repo Bool))
     , location : Location
+    , errorMessage : Maybe String
     }
