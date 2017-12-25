@@ -21,6 +21,7 @@ clientSecret = "1ad91f7bb53f9d9e37b9b8927f446b41c615126e"
 type TokenData = TokenData (Maybe String) (Maybe String)
 
 
+-- URL starts with repoName, contains "code" and "state" queries.
 redirectParser : String -> Url.Parser (TokenData -> a) a
 redirectParser repoName =
     Url.map TokenData
@@ -29,6 +30,8 @@ redirectParser repoName =
             <?> Url.stringParam "state"
         )
 
+
+-- Some references that help explain CORS related issues.
 
 -- https://stackoverflow.com/questions/42150075/cors-issue-on-github-oauth
 -- https://github.com/isaacs/github/issues/330
@@ -44,6 +47,7 @@ requestAuthorization code =
          ++ "&client_secret=" ++ clientSecret
          ++ "&code=" ++ code
 
+        -- Need to use a proxy for github.com POST to work in browser.
         -- Both "cors anywhere" sites work but "headland" one is more reliable.
         -- corsAnywhere = "https://cors-anywhere.herokuapp.com/"
         corsAnywhere =
@@ -69,8 +73,13 @@ init location =
         notSlash s =
             s /= '/'
 
+        -- remove leading and trailing slashes from repo name.
         repoName =
             String.filter notSlash location.pathname
+
+        -- if we have vaild input in URL then use the "code"
+        -- to request an authorization token and get program 
+        -- specific parameters from the "state"
 
         ( cmd, args ) =
             case (Url.parsePath (redirectParser repoName) location) of
