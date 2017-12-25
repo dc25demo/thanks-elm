@@ -73,7 +73,7 @@ view model =
                         [ label [] [ text ("Error: " ++ toString e) ] ]
 
                     Just (Ok (fileName, deps)) ->
-                           ( label [] [ text ("Thanking everyone who helped create and maintain your Elm project's dependences ( as found in file: \"" ++ fileName ++ "\" ) ...") ] )
+                           ( label [] [ text ("Thanking everyone who helped create and maintain your Elm project's dependences ( as found in file: \"" ++ fileName ++ "\" ) .....") ] )
                         :: ( div [] (List.map showThanked (Dict.toList deps)) )
                         :: if List.all identity (Dict.values deps) 
                            then [ br [] []
