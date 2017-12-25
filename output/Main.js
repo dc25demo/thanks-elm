@@ -9903,6 +9903,13 @@ var _user$project$Model$Model = F2(
 		return {projectData: a, location: b};
 	});
 
+var _user$project$View$allDoneMessage = 'All done, thanks for being grateful!';
+var _user$project$View$thankingMessage = function (fileName) {
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		'Thanking everyone who helped create and maintain your Elm project\'s dependences ( as found in file: \"',
+		A2(_elm_lang$core$Basics_ops['++'], fileName, '\" ) .....'));
+};
 var _user$project$View$thankedCheckbox = F2(
 	function (s, boxId) {
 		return A2(
@@ -10109,10 +10116,7 @@ var _user$project$View$view = function (model) {
 									{
 										ctor: '::',
 										_0: _elm_lang$html$Html$text(
-											A2(
-												_elm_lang$core$Basics_ops['++'],
-												'Thanking everyone who helped create and maintain your Elm project\'s dependences ( as found in file: \"',
-												A2(_elm_lang$core$Basics_ops['++'], _p5._0._0._0, '\" ) .....'))),
+											_user$project$View$thankingMessage(_p5._0._0._0)),
 										_1: {ctor: '[]'}
 									}),
 								_1: {
@@ -10145,7 +10149,7 @@ var _user$project$View$view = function (model) {
 														{ctor: '[]'},
 														{
 															ctor: '::',
-															_0: _elm_lang$html$Html$text('All done, thanks for being grateful!'),
+															_0: _elm_lang$html$Html$text(_user$project$View$allDoneMessage),
 															_1: {ctor: '[]'}
 														}),
 													_1: {ctor: '[]'}

@@ -62,26 +62,30 @@ showThanked ( d, s ) =
             , label [ for d, class "name" ] [ text (repo) ]
             ]
 
+thankingMessage fileName = 
+    "Thanking everyone who helped create and maintain your Elm project's dependences ( as found in file: \"" ++ fileName ++ "\" ) ....."
+
+allDoneMessage = 
+    "All done, thanks for being grateful!"
 
 view : Model -> Html Msg
 view model =
     div []
-        (chooseFile
-            :: (br [] [])
-            :: (case (model.projectData)  of
-                    Just (Err e) ->
-                        [ label [] [ text ("Error: " ++ toString e) ] ]
+        (    chooseFile
+          :: (br [] [])
+          :: (case (model.projectData)  of
+                  Just (Err e) ->
+                      [ label [] [ text ("Error: " ++ toString e) ] ]
 
-                    Just (Ok (fileName, deps)) ->
-                           ( label [] [ text ("Thanking everyone who helped create and maintain your Elm project's dependences ( as found in file: \"" ++ fileName ++ "\" ) .....") ] )
-                        :: ( div [] (List.map showThanked (Dict.toList deps)) )
-                        :: if List.all identity (Dict.values deps) 
-                           then [ br [] []
-                                , div [] 
-                                      [ label [] [text "All done, thanks for being grateful!"] ] ]
-                           else []
+                  Just (Ok (fileName, deps)) ->
+                         ( label [] [ text (thankingMessage fileName)] )
+                      :: ( div [] (List.map showThanked (Dict.toList deps)) )
+                      :: if List.all identity (Dict.values deps) 
+                         then [ br [] []
+                              , div [] 
+                                    [ label [] [text allDoneMessage] ] ]
+                         else []
 
-                    Nothing -> []
-
-               )
+                  Nothing -> []
+             )
         )
