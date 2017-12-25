@@ -99,7 +99,6 @@ init location =
     in
         ( { projectData = projectData
           , location = location
-          , errorMessage = Nothing
           }
         , cmd
         )
@@ -132,6 +131,8 @@ applyStars auth model =
             Cmd.none
 
 
+setModelErr : Model -> String -> Model
+setModelErr model err = {model | projectData = Just (Err err) }
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -174,8 +175,14 @@ update msg model =
                     ( Ok name, Ok deps ) ->
                         ( model , load (authUri model.location name deps))
 
-                    _ ->
-                        ( model, Cmd.none )
+                    ( Ok name, Err depsError ) ->
+                        ( setModelErr model depsError, Cmd.none)
+
+                    ( Err nameError, Ok deps ) ->
+                        ( setModelErr model nameError, Cmd.none)
+
+                    ( Err nameError, Err depsError ) ->
+                        ( setModelErr model <| nameError ++ " / " ++ depsError, Cmd.none)
 
         Authorized (Ok auth) ->
             -- response recieved from github.com access token request
@@ -183,7 +190,7 @@ update msg model =
 
         Authorized (Err errorMessage) ->
             -- response recieved from github.com access token request
-            ( { model | errorMessage = Just (toString errorMessage) }, Cmd.none)
+            ( setModelErr model (toString errorMessage), Cmd.none)
 
         StarSet dependency code ->
             -- response recieved from api.github.com after setting star.
@@ -193,7 +200,7 @@ update msg model =
             in
                 ( { model | projectData = newProjectData }, Cmd.none )
 
-        UrlChange _ ->
+        UrlChange _ ->  -- should not happen.
             ( model, Cmd.none )
 
 

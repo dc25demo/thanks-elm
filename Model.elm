@@ -5,12 +5,14 @@ import Dict exposing (..)
 import Navigation exposing (Location)
 
 
-type alias Repo =
-    String
+type alias Repo = String
+
+type alias StarredRepos = Dict Repo Bool
+
+type alias FileName = String
 
 
 type alias Model =
-    { projectData : Maybe (Result String (String, Dict Repo Bool))
+    { projectData : Maybe (Result String (FileName, StarredRepos))
     , location : Location
-    , errorMessage : Maybe String
     }

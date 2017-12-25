@@ -68,15 +68,12 @@ view model =
     div []
         (chooseFile
             :: (br [] [])
-            :: (case (model.errorMessage, model.projectData)  of
-                    (Just e, _ ) ->
-                        [ label [] [ text ("Processing error: " ++ e) ] ]
+            :: (case (model.projectData)  of
+                    Just (Err e) ->
+                        [ label [] [ text ("Error: " ++ toString e) ] ]
 
-                    (_, Just (Err e)) ->
-                        [ label [] [ text ("File read error: " ++ toString e) ] ]
-
-                    (Nothing, Just (Ok (fileName, deps))) ->
-                           ( label [] [ text ("Thanking everyone who helped create and maintain your Elm project's dependences ( as found in file: \"" ++ fileName ++ "\" ) ....") ] )
+                    Just (Ok (fileName, deps)) ->
+                           ( label [] [ text ("Thanking everyone who helped create and maintain your Elm project's dependences ( as found in file: \"" ++ fileName ++ "\" ) ...") ] )
                         :: ( div [] (List.map showThanked (Dict.toList deps)) )
                         :: if List.all identity (Dict.values deps) 
                            then [ br [] []
@@ -84,7 +81,7 @@ view model =
                                       [ label [] [text "All done, thanks for being grateful!"] ] ]
                            else []
 
-                    (Nothing, Nothing) -> []
+                    Nothing -> []
 
                )
         )
