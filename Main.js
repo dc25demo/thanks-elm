@@ -10221,6 +10221,39 @@ var _user$project$Main$applyStars = F2(
 			return _elm_lang$core$Platform_Cmd$none;
 		}
 	});
+var _user$project$Main$getProjectData = function (args) {
+	var nameDecoder = A2(_elm_lang$core$Json_Decode$field, 'fileName', _elm_lang$core$Json_Decode$string);
+	var fileName = A2(
+		_elm_lang$core$Maybe$map,
+		_elm_lang$core$Json_Decode$decodeString(nameDecoder),
+		args);
+	var contentDecoder = A2(
+		_elm_lang$core$Json_Decode$field,
+		'dependencies',
+		_elm_lang$core$Json_Decode$dict(_elm_lang$core$Json_Decode$string));
+	var decodedDeps = A2(
+		_elm_lang$core$Maybe$map,
+		_elm_lang$core$Json_Decode$decodeString(contentDecoder),
+		args);
+	var dependencies = A2(
+		_elm_lang$core$Maybe$map,
+		_elm_lang$core$Result$map(
+			_elm_lang$core$Dict$map(
+				F2(
+					function (k, s) {
+						return false;
+					}))),
+		decodedDeps);
+	return A3(
+		_elm_lang$core$Maybe$map2,
+		_elm_lang$core$Result$map2(
+			F2(
+				function (v0, v1) {
+					return {ctor: '_Tuple2', _0: v0, _1: v1};
+				})),
+		fileName,
+		dependencies);
+};
 var _user$project$Main$clientSecret = '1ad91f7bb53f9d9e37b9b8927f446b41c615126e';
 var _user$project$Main$clientId = '167f916723e5ae13e9fe';
 var _user$project$Main$requestToken = function (code) {
@@ -10386,14 +10419,14 @@ var _user$project$Main$update = F2(
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 		}
 	});
-var _user$project$Main$TokenData = F2(
+var _user$project$Main$RedirectParams = F2(
 	function (a, b) {
-		return {ctor: 'TokenData', _0: a, _1: b};
+		return {ctor: 'RedirectParams', _0: a, _1: b};
 	});
 var _user$project$Main$redirectParser = function (repoName) {
 	return A2(
 		_evancz$url_parser$UrlParser$map,
-		_user$project$Main$TokenData,
+		_user$project$Main$RedirectParams,
 		A2(
 			_evancz$url_parser$UrlParser_ops['<?>'],
 			A2(
@@ -10403,11 +10436,6 @@ var _user$project$Main$redirectParser = function (repoName) {
 			_evancz$url_parser$UrlParser$stringParam('state')));
 };
 var _user$project$Main$init = function (location) {
-	var nameDecoder = A2(_elm_lang$core$Json_Decode$field, 'fileName', _elm_lang$core$Json_Decode$string);
-	var contentDecoder = A2(
-		_elm_lang$core$Json_Decode$field,
-		'dependencies',
-		_elm_lang$core$Json_Decode$dict(_elm_lang$core$Json_Decode$string));
 	var repoName = A2(
 		_elm_lang$core$String$filter,
 		F2(
@@ -10421,44 +10449,43 @@ var _user$project$Main$init = function (location) {
 			_evancz$url_parser$UrlParser$parsePath,
 			_user$project$Main$redirectParser(repoName),
 			location);
-		if ((_p6.ctor === 'Just') && (_p6._0._0.ctor === 'Just')) {
-			return {
-				ctor: '_Tuple2',
-				_0: _user$project$Main$requestToken(_p6._0._0._0),
-				_1: _p6._0._1
-			};
+		if (_p6.ctor === 'Just') {
+			if (_p6._0._0.ctor === 'Just') {
+				if (_p6._0._1.ctor === 'Just') {
+					return {
+						ctor: '_Tuple2',
+						_0: _user$project$Main$requestToken(_p6._0._0._0),
+						_1: _user$project$Main$getProjectData(
+							_elm_lang$core$Maybe$Just(_p6._0._1._0))
+					};
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Platform_Cmd$none,
+						_1: _elm_lang$core$Maybe$Just(
+							_elm_lang$core$Result$Err(
+								A2(_elm_lang$core$Basics_ops['++'], 'Expected \'code\' and \'state\' query parameters but only found \'code\': ', _p6._0._0._0)))
+					};
+				}
+			} else {
+				if (_p6._0._1.ctor === 'Just') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Platform_Cmd$none,
+						_1: _elm_lang$core$Maybe$Just(
+							_elm_lang$core$Result$Err(
+								A2(_elm_lang$core$Basics_ops['++'], 'Expected \'code\' and \'state\' query parameters but only found \'state\': ', _p6._0._1._0)))
+					};
+				} else {
+					return {ctor: '_Tuple2', _0: _elm_lang$core$Platform_Cmd$none, _1: _elm_lang$core$Maybe$Nothing};
+				}
+			}
 		} else {
 			return {ctor: '_Tuple2', _0: _elm_lang$core$Platform_Cmd$none, _1: _elm_lang$core$Maybe$Nothing};
 		}
 	}();
 	var cmd = _p5._0;
-	var args = _p5._1;
-	var decodedDeps = A2(
-		_elm_lang$core$Maybe$map,
-		_elm_lang$core$Json_Decode$decodeString(contentDecoder),
-		args);
-	var dependencies = A2(
-		_elm_lang$core$Maybe$map,
-		_elm_lang$core$Result$map(
-			_elm_lang$core$Dict$map(
-				F2(
-					function (k, s) {
-						return false;
-					}))),
-		decodedDeps);
-	var fileName = A2(
-		_elm_lang$core$Maybe$map,
-		_elm_lang$core$Json_Decode$decodeString(nameDecoder),
-		args);
-	var projectData = A3(
-		_elm_lang$core$Maybe$map2,
-		_elm_lang$core$Result$map2(
-			F2(
-				function (v0, v1) {
-					return {ctor: '_Tuple2', _0: v0, _1: v1};
-				})),
-		fileName,
-		dependencies);
+	var projectData = _p5._1;
 	return {
 		ctor: '_Tuple2',
 		_0: {projectData: projectData, location: location},
