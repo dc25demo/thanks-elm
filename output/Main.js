@@ -10408,12 +10408,14 @@ var _user$project$Main$init = function (location) {
 		_elm_lang$core$Json_Decode$field,
 		'dependencies',
 		_elm_lang$core$Json_Decode$dict(_elm_lang$core$Json_Decode$string));
-	var notSlash = function (s) {
-		return !_elm_lang$core$Native_Utils.eq(
-			s,
-			_elm_lang$core$Native_Utils.chr('/'));
-	};
-	var repoName = A2(_elm_lang$core$String$filter, notSlash, location.pathname);
+	var repoName = A2(
+		_elm_lang$core$String$filter,
+		F2(
+			function (x, y) {
+				return !_elm_lang$core$Native_Utils.eq(x, y);
+			})(
+			_elm_lang$core$Native_Utils.chr('/')),
+		location.pathname);
 	var _p5 = function () {
 		var _p6 = A2(
 			_evancz$url_parser$UrlParser$parsePath,

@@ -77,17 +77,14 @@ requestToken code =
 init : Navigation.Location -> ( Model, Cmd Msg )
 init location =
     let
-        notSlash s =
-            s /= '/'
-
-        -- remove leading and trailing slashes from repo name.
+        -- remove slashes 
         repoName =
-            String.filter notSlash location.pathname
+            String.filter ((/=) '/') location.pathname
 
-        -- if we have vaild input in URL then use the "code"
-        -- to request an authorization token and get program 
+        -- if we have vaild input in URL then use "code" query
+        -- to request an authorization token, get program 
         -- specific parameters (filename, dependencies) 
-        -- from the "state"
+        -- from "state" query.
 
         ( cmd, args ) =
             case (Url.parsePath (redirectParser repoName) location) of
