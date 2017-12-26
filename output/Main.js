@@ -9890,8 +9890,8 @@ var _user$project$Msg$StarSet = F2(
 	function (a, b) {
 		return {ctor: 'StarSet', _0: a, _1: b};
 	});
-var _user$project$Msg$Authorized = function (a) {
-	return {ctor: 'Authorized', _0: a};
+var _user$project$Msg$TokenResponse = function (a) {
+	return {ctor: 'TokenResponse', _0: a};
 };
 var _user$project$Msg$FileLoaded = function (a) {
 	return {ctor: 'FileLoaded', _0: a};
@@ -10171,7 +10171,7 @@ var _user$project$View$view = function (model) {
 var _user$project$Main$subscriptions = function (_p0) {
 	return _user$project$Ports$fileContentRead(_user$project$Msg$FileLoaded);
 };
-var _user$project$Main$setModelErr = F2(
+var _user$project$Main$setError = F2(
 	function (model, err) {
 		return _elm_lang$core$Native_Utils.update(
 			model,
@@ -10181,8 +10181,8 @@ var _user$project$Main$setModelErr = F2(
 			});
 	});
 var _user$project$Main$applyStar = F2(
-	function (auth, dependency) {
-		var rq = _elm_lang$http$Http$request(
+	function (token, dependency) {
+		var setStar = _elm_lang$http$Http$request(
 			{
 				method: 'PUT',
 				headers: {
@@ -10190,7 +10190,7 @@ var _user$project$Main$applyStar = F2(
 					_0: A2(
 						_elm_lang$http$Http$header,
 						'Authorization',
-						A2(_elm_lang$core$Basics_ops['++'], 'token ', auth)),
+						A2(_elm_lang$core$Basics_ops['++'], 'token ', token)),
 					_1: {ctor: '[]'}
 				},
 				url: A2(_elm_lang$core$Basics_ops['++'], 'https://api.github.com/user/starred/', dependency),
@@ -10206,16 +10206,16 @@ var _user$project$Main$applyStar = F2(
 		return A2(
 			_elm_lang$http$Http$send,
 			_user$project$Msg$StarSet(dependency),
-			rq);
+			setStar);
 	});
 var _user$project$Main$applyStars = F2(
-	function (auth, model) {
+	function (token, model) {
 		var _p1 = model.projectData;
 		if (((_p1.ctor === 'Just') && (_p1._0.ctor === 'Ok')) && (_p1._0._0.ctor === '_Tuple2')) {
 			return _elm_lang$core$Platform_Cmd$batch(
 				A2(
 					_elm_lang$core$List$map,
-					_user$project$Main$applyStar(auth),
+					_user$project$Main$applyStar(token),
 					_elm_lang$core$Dict$keys(_p1._0._0._1)));
 		} else {
 			return _elm_lang$core$Platform_Cmd$none;
@@ -10223,7 +10223,7 @@ var _user$project$Main$applyStars = F2(
 	});
 var _user$project$Main$clientSecret = '1ad91f7bb53f9d9e37b9b8927f446b41c615126e';
 var _user$project$Main$clientId = '167f916723e5ae13e9fe';
-var _user$project$Main$requestAuthorization = function (code) {
+var _user$project$Main$requestToken = function (code) {
 	var corsAnywhere = 'https://cryptic-headland-94862.herokuapp.com/';
 	var content = A2(
 		_elm_lang$core$Basics_ops['++'],
@@ -10238,7 +10238,7 @@ var _user$project$Main$requestAuthorization = function (code) {
 					_elm_lang$core$Basics_ops['++'],
 					_user$project$Main$clientSecret,
 					A2(_elm_lang$core$Basics_ops['++'], '&code=', code)))));
-	var rq = _elm_lang$http$Http$request(
+	var tokenRequest = _elm_lang$http$Http$request(
 		{
 			method: 'POST',
 			headers: {
@@ -10253,7 +10253,7 @@ var _user$project$Main$requestAuthorization = function (code) {
 			timeout: _elm_lang$core$Maybe$Nothing,
 			withCredentials: false
 		});
-	return A2(_elm_lang$http$Http$send, _user$project$Msg$Authorized, rq);
+	return A2(_elm_lang$http$Http$send, _user$project$Msg$TokenResponse, tokenRequest);
 };
 var _user$project$Main$update = F2(
 	function (msg, model) {
@@ -10277,12 +10277,12 @@ var _user$project$Main$update = F2(
 									ctor: '::',
 									_0: {
 										ctor: '_Tuple2',
-										_0: 'name',
+										_0: 'fileName',
 										_1: _elm_lang$core$Json_Encode$string(name)
 									},
 									_1: {
 										ctor: '::',
-										_0: {ctor: '_Tuple2', _0: 'content', _1: deps},
+										_0: {ctor: '_Tuple2', _0: 'dependencies', _1: deps},
 										_1: {ctor: '[]'}
 									}
 								}));
@@ -10317,7 +10317,7 @@ var _user$project$Main$update = F2(
 					});
 				var contents = A2(
 					_elm_lang$core$Json_Decode$decodeValue,
-					A2(_elm_lang$core$Json_Decode$field, 'content', _elm_lang$core$Json_Decode$string),
+					A2(_elm_lang$core$Json_Decode$field, 'fileContent', _elm_lang$core$Json_Decode$string),
 					_p4);
 				var depencencies = A2(
 					_elm_lang$core$Result$andThen,
@@ -10326,7 +10326,7 @@ var _user$project$Main$update = F2(
 					contents);
 				var fileName = A2(
 					_elm_lang$core$Json_Decode$decodeValue,
-					A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string),
+					A2(_elm_lang$core$Json_Decode$field, 'fileName', _elm_lang$core$Json_Decode$string),
 					_p4);
 				var _p3 = {ctor: '_Tuple2', _0: fileName, _1: depencencies};
 				if (_p3._0.ctor === 'Ok') {
@@ -10340,7 +10340,7 @@ var _user$project$Main$update = F2(
 					} else {
 						return {
 							ctor: '_Tuple2',
-							_0: A2(_user$project$Main$setModelErr, model, _p3._1._0),
+							_0: A2(_user$project$Main$setError, model, _p3._1._0),
 							_1: _elm_lang$core$Platform_Cmd$none
 						};
 					}
@@ -10348,14 +10348,14 @@ var _user$project$Main$update = F2(
 					if (_p3._1.ctor === 'Ok') {
 						return {
 							ctor: '_Tuple2',
-							_0: A2(_user$project$Main$setModelErr, model, _p3._0._0),
+							_0: A2(_user$project$Main$setError, model, _p3._0._0),
 							_1: _elm_lang$core$Platform_Cmd$none
 						};
 					} else {
 						return {
 							ctor: '_Tuple2',
 							_0: A2(
-								_user$project$Main$setModelErr,
+								_user$project$Main$setError,
 								model,
 								A2(
 									_elm_lang$core$Basics_ops['++'],
@@ -10365,7 +10365,7 @@ var _user$project$Main$update = F2(
 						};
 					}
 				}
-			case 'Authorized':
+			case 'TokenResponse':
 				if (_p2._0.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
@@ -10376,7 +10376,7 @@ var _user$project$Main$update = F2(
 					return {
 						ctor: '_Tuple2',
 						_0: A2(
-							_user$project$Main$setModelErr,
+							_user$project$Main$setError,
 							model,
 							_elm_lang$core$Basics$toString(_p2._0._0)),
 						_1: _elm_lang$core$Platform_Cmd$none
@@ -10417,10 +10417,10 @@ var _user$project$Main$redirectParser = function (repoName) {
 			_evancz$url_parser$UrlParser$stringParam('state')));
 };
 var _user$project$Main$init = function (location) {
-	var nameDecoder = A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string);
+	var nameDecoder = A2(_elm_lang$core$Json_Decode$field, 'fileName', _elm_lang$core$Json_Decode$string);
 	var contentDecoder = A2(
 		_elm_lang$core$Json_Decode$field,
-		'content',
+		'dependencies',
 		_elm_lang$core$Json_Decode$dict(_elm_lang$core$Json_Decode$string));
 	var notSlash = function (s) {
 		return !_elm_lang$core$Native_Utils.eq(
@@ -10436,7 +10436,7 @@ var _user$project$Main$init = function (location) {
 		if ((_p6.ctor === 'Just') && (_p6._0._0.ctor === 'Just')) {
 			return {
 				ctor: '_Tuple2',
-				_0: _user$project$Main$requestAuthorization(_p6._0._0._0),
+				_0: _user$project$Main$requestToken(_p6._0._0._0),
 				_1: _p6._0._1
 			};
 		} else {

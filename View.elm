@@ -71,21 +71,21 @@ allDoneMessage =
 view : Model -> Html Msg
 view model =
     div []
-        (    chooseFile
-          :: (br [] [])
-          :: (case (model.projectData)  of
-                  Just (Err e) ->
-                      [ label [] [ text ("Error: " ++ toString e) ] ]
+        (  chooseFile
+        :: (br [] [])
+        :: (case (model.projectData)  of
+                Just (Err e) ->
+                    [ label [] [ text ("Error: " ++ toString e) ] ]
 
-                  Just (Ok (fileName, deps)) ->
-                         ( label [] [ text (thankingMessage fileName)] )
-                      :: ( div [] (List.map showThanked (Dict.toList deps)) )
-                      :: if List.all identity (Dict.values deps) 
-                         then [ br [] []
-                              , div [] 
-                                    [ label [] [text allDoneMessage] ] ]
-                         else []
+                Just (Ok (fileName, deps)) ->
+                       ( label [] [ text (thankingMessage fileName)] )
+                    :: ( div [] (List.map showThanked (Dict.toList deps)) )
+                    :: if List.all identity (Dict.values deps) 
+                       then [ br [] []
+                            , div [] 
+                                  [ label [] [text allDoneMessage] ] ]
+                       else []
 
-                  Nothing -> []
-             )
-        )
+                Nothing -> []
+           )
+      )
