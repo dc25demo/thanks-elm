@@ -172,8 +172,10 @@ update msg model =
                     JD.decodeValue (JD.field "fileContent" JD.string) jval
 
                 -- get dependencies from content
-                depencencies =
+                dependencies =
                     Result.andThen (JD.decodeString (JD.field "dependencies" JD.value)) contents
+
+                fileData = Result.map2 (,) fileName dependencies
 
                 encode name deps = 
                     JE.encode 0
@@ -191,20 +193,14 @@ update msg model =
                         ++ "&state=" ++ (encode name deps)
 
             in
-                case ( fileName, depencencies ) of
+                case ( fileData ) of
                     -- Send valid name and dependencies to github.com ; 
                     -- Returned via redirect along with authorization code.
-                    ( Ok name, Ok deps ) ->
+                    ( Ok (name, deps) ) ->
                         ( model , load (authUri model.location name deps))
 
-                    ( Ok name, Err depsError ) ->
-                        ( setError model depsError, Cmd.none)
-
-                    ( Err nameError, Ok deps ) ->
-                        ( setError model nameError, Cmd.none)
-
-                    ( Err nameError, Err depsError ) ->
-                        ( setError model <| nameError ++ " / " ++ depsError, Cmd.none)
+                    ( Err err ) ->
+                        ( setError model err, Cmd.none)
 
         TokenResponse (Ok token) ->
             -- successful github.com access token request
@@ -216,7 +212,7 @@ update msg model =
 
         StarSet dependency code ->
             -- response recieved from api.github.com after setting star.
-            -- No error checking; just assuming success.
+            -- No error checking; just flagging completion.
             let
                 newProjectData =
                     Maybe.map (Result.map (Tuple.mapSecond (Dict.insert dependency True ))) model.projectData

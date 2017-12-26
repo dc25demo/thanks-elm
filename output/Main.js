@@ -10319,7 +10319,7 @@ var _user$project$Main$update = F2(
 					_elm_lang$core$Json_Decode$decodeValue,
 					A2(_elm_lang$core$Json_Decode$field, 'fileContent', _elm_lang$core$Json_Decode$string),
 					_p4);
-				var depencencies = A2(
+				var dependencies = A2(
 					_elm_lang$core$Result$andThen,
 					_elm_lang$core$Json_Decode$decodeString(
 						A2(_elm_lang$core$Json_Decode$field, 'dependencies', _elm_lang$core$Json_Decode$value)),
@@ -10328,42 +10328,28 @@ var _user$project$Main$update = F2(
 					_elm_lang$core$Json_Decode$decodeValue,
 					A2(_elm_lang$core$Json_Decode$field, 'fileName', _elm_lang$core$Json_Decode$string),
 					_p4);
-				var _p3 = {ctor: '_Tuple2', _0: fileName, _1: depencencies};
-				if (_p3._0.ctor === 'Ok') {
-					if (_p3._1.ctor === 'Ok') {
-						return {
-							ctor: '_Tuple2',
-							_0: model,
-							_1: _elm_lang$navigation$Navigation$load(
-								A3(authUri, model.location, _p3._0._0, _p3._1._0))
-						};
-					} else {
-						return {
-							ctor: '_Tuple2',
-							_0: A2(_user$project$Main$setError, model, _p3._1._0),
-							_1: _elm_lang$core$Platform_Cmd$none
-						};
-					}
+				var fileData = A3(
+					_elm_lang$core$Result$map2,
+					F2(
+						function (v0, v1) {
+							return {ctor: '_Tuple2', _0: v0, _1: v1};
+						}),
+					fileName,
+					dependencies);
+				var _p3 = fileData;
+				if (_p3.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: model,
+						_1: _elm_lang$navigation$Navigation$load(
+							A3(authUri, model.location, _p3._0._0, _p3._0._1))
+					};
 				} else {
-					if (_p3._1.ctor === 'Ok') {
-						return {
-							ctor: '_Tuple2',
-							_0: A2(_user$project$Main$setError, model, _p3._0._0),
-							_1: _elm_lang$core$Platform_Cmd$none
-						};
-					} else {
-						return {
-							ctor: '_Tuple2',
-							_0: A2(
-								_user$project$Main$setError,
-								model,
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									_p3._0._0,
-									A2(_elm_lang$core$Basics_ops['++'], ' / ', _p3._1._0))),
-							_1: _elm_lang$core$Platform_Cmd$none
-						};
-					}
+					return {
+						ctor: '_Tuple2',
+						_0: A2(_user$project$Main$setError, model, _p3._0),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
 				}
 			case 'TokenResponse':
 				if (_p2._0.ctor === 'Ok') {
