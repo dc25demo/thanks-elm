@@ -18,14 +18,14 @@ clientId = "167f916723e5ae13e9fe"
 clientSecret = "1ad91f7bb53f9d9e37b9b8927f446b41c615126e"
 
 
-type TokenData = TokenData (Maybe String) (Maybe String)
+type RedirectParams = RedirectParams (Maybe String) (Maybe String)
 
 -- URL (redirected from github.com ) starts with repoName, 
 -- contains "code" and "state" queries.
 
-redirectParser : String -> Url.Parser (TokenData -> a) a
+redirectParser : String -> Url.Parser (RedirectParams -> a) a
 redirectParser repoName =
-    Url.map TokenData
+    Url.map RedirectParams
         (Url.s repoName
             <?> Url.stringParam "code"
             <?> Url.stringParam "state"
@@ -68,6 +68,23 @@ requestToken code =
     in
         send TokenResponse tokenRequest
 
+getProjectData args = 
+    let contentDecoder =
+            (JD.field "dependencies" (JD.dict JD.string))
+
+        decodedDeps =
+            Maybe.map (JD.decodeString contentDecoder) args
+
+        dependencies =
+            Maybe.map (Result.map (Dict.map (\k s -> False))) decodedDeps
+
+        nameDecoder =
+            (JD.field "fileName" JD.string)
+
+        fileName =
+            Maybe.map (JD.decodeString nameDecoder) args
+
+    in Maybe.map2 (Result.map2 (,)) fileName dependencies
 
 -- Called without parameters on the initial page load
 -- or with parameters when the page is redirected to from github 
@@ -86,30 +103,23 @@ init location =
         -- specific parameters (filename, dependencies) 
         -- from "state" query.
 
-        ( cmd, args ) =
+        ( cmd, projectData ) =
             case (Url.parsePath (redirectParser repoName) location) of
-                Just (TokenData (Just code) deps0) ->
-                    ( requestToken code, deps0 )
+                Just (RedirectParams (Just code) (Just state)) ->
+                    ( requestToken code, getProjectData (Just state) )
 
-                _ ->
+                Just (RedirectParams Nothing (Just state)) ->
+                    ( Cmd.none, Just (Err ("Expected 'code' and 'state' query parameters but only found 'state': " ++ state)))
+
+                Just (RedirectParams (Just code) Nothing) ->
+                    ( Cmd.none, Just (Err ("Expected 'code' and 'state' query parameters but only found 'code': " ++ code)))
+
+                Just (RedirectParams Nothing Nothing) ->
                     ( Cmd.none, Nothing )
 
-        contentDecoder =
-            (JD.field "dependencies" (JD.dict JD.string))
+                Nothing ->
+                    ( Cmd.none, Nothing )
 
-        decodedDeps =
-            Maybe.map (JD.decodeString contentDecoder) args
-
-        dependencies =
-            Maybe.map (Result.map (Dict.map (\k s -> False))) decodedDeps
-
-        nameDecoder =
-            (JD.field "fileName" JD.string)
-
-        fileName =
-            Maybe.map (JD.decodeString nameDecoder) args
-
-        projectData = Maybe.map2 (Result.map2 (,)) fileName dependencies
     in
         ( { projectData = projectData
           , location = location
