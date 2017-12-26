@@ -63,7 +63,7 @@ showThanked ( d, s ) =
             ]
 
 thankingMessage fileName = 
-    "Thanking everyone who helped create and maintain your Elm project's dependences ( as found in file: \"" ++ fileName ++ "\" ) ....."
+    "Thanking everyone who helped create and maintain your Elm project's dependences ( as found in file: \"" ++ fileName ++ "\" ) .."
 
 allDoneMessage = 
     "All done, thanks for being grateful!"

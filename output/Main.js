@@ -9908,7 +9908,7 @@ var _user$project$View$thankingMessage = function (fileName) {
 	return A2(
 		_elm_lang$core$Basics_ops['++'],
 		'Thanking everyone who helped create and maintain your Elm project\'s dependences ( as found in file: \"',
-		A2(_elm_lang$core$Basics_ops['++'], fileName, '\" ) .....'));
+		A2(_elm_lang$core$Basics_ops['++'], fileName, '\" ) ..'));
 };
 var _user$project$View$thankedCheckbox = F2(
 	function (s, boxId) {
@@ -10223,34 +10223,26 @@ var _user$project$Main$applyStars = F2(
 	});
 var _user$project$Main$getProjectData = function (args) {
 	var nameDecoder = A2(_elm_lang$core$Json_Decode$field, 'fileName', _elm_lang$core$Json_Decode$string);
-	var fileName = A2(
-		_elm_lang$core$Maybe$map,
-		_elm_lang$core$Json_Decode$decodeString(nameDecoder),
-		args);
+	var fileName = A2(_elm_lang$core$Json_Decode$decodeString, nameDecoder, args);
 	var contentDecoder = A2(
 		_elm_lang$core$Json_Decode$field,
 		'dependencies',
 		_elm_lang$core$Json_Decode$dict(_elm_lang$core$Json_Decode$string));
-	var decodedDeps = A2(
-		_elm_lang$core$Maybe$map,
-		_elm_lang$core$Json_Decode$decodeString(contentDecoder),
-		args);
+	var decodedDeps = A2(_elm_lang$core$Json_Decode$decodeString, contentDecoder, args);
 	var dependencies = A2(
-		_elm_lang$core$Maybe$map,
-		_elm_lang$core$Result$map(
-			_elm_lang$core$Dict$map(
-				F2(
-					function (k, s) {
-						return false;
-					}))),
+		_elm_lang$core$Result$map,
+		_elm_lang$core$Dict$map(
+			F2(
+				function (k, s) {
+					return false;
+				})),
 		decodedDeps);
 	return A3(
-		_elm_lang$core$Maybe$map2,
-		_elm_lang$core$Result$map2(
-			F2(
-				function (v0, v1) {
-					return {ctor: '_Tuple2', _0: v0, _1: v1};
-				})),
+		_elm_lang$core$Result$map2,
+		F2(
+			function (v0, v1) {
+				return {ctor: '_Tuple2', _0: v0, _1: v1};
+			}),
 		fileName,
 		dependencies);
 };
@@ -10455,8 +10447,8 @@ var _user$project$Main$init = function (location) {
 					return {
 						ctor: '_Tuple2',
 						_0: _user$project$Main$requestToken(_p6._0._0._0),
-						_1: _user$project$Main$getProjectData(
-							_elm_lang$core$Maybe$Just(_p6._0._1._0))
+						_1: _elm_lang$core$Maybe$Just(
+							_user$project$Main$getProjectData(_p6._0._1._0))
 					};
 				} else {
 					return {

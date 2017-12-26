@@ -68,23 +68,24 @@ requestToken code =
     in
         send TokenResponse tokenRequest
 
+getProjectData : String -> Result String (String, Dict String Bool)
 getProjectData args = 
     let contentDecoder =
             (JD.field "dependencies" (JD.dict JD.string))
 
         decodedDeps =
-            Maybe.map (JD.decodeString contentDecoder) args
+            JD.decodeString contentDecoder args
 
         dependencies =
-            Maybe.map (Result.map (Dict.map (\k s -> False))) decodedDeps
+            Result.map (Dict.map (\k s -> False)) decodedDeps
 
         nameDecoder =
             (JD.field "fileName" JD.string)
 
         fileName =
-            Maybe.map (JD.decodeString nameDecoder) args
+            JD.decodeString nameDecoder args
 
-    in Maybe.map2 (Result.map2 (,)) fileName dependencies
+    in Result.map2 (,) fileName dependencies
 
 -- Called without parameters on the initial page load
 -- or with parameters when the page is redirected to from github 
@@ -106,7 +107,7 @@ init location =
         ( cmd, projectData ) =
             case (Url.parsePath (redirectParser repoName) location) of
                 Just (RedirectParams (Just code) (Just state)) ->
-                    ( requestToken code, getProjectData (Just state) )
+                    ( requestToken code, Just (getProjectData state) )
 
                 Just (RedirectParams Nothing (Just state)) ->
                     ( Cmd.none, Just (Err ("Expected 'code' and 'state' query parameters but only found 'state': " ++ state)))
