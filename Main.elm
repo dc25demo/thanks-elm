@@ -39,6 +39,8 @@ redirectParser repoName =
 -- https://stackoverflow.com/questions/29670703/how-to-use-cors-anywhere-to-reverse-proxy-and-add-cors-headers
 -- https://stackoverflow.com/questions/47076743/cors-anywhere-herokuapp-com-not-working/47085173#47085173
 
+-- Called when page is loaded by redirect from github.  Authoriztion code came from 
+-- github login and is POSTed to github.com to get a token to allow api access.
 requestToken : String -> Cmd Msg
 requestToken code =
     let
@@ -156,9 +158,11 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         FileSelected ->
+            -- user selected a file
             ( model, fileSelected "PackageJSON" )
 
         FileLoaded jval ->
+            -- file name and contents from javascript via port / subscription
             let
                 -- get file name and content that were received through port.
                 fileName =
