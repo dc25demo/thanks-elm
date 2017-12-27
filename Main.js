@@ -10222,19 +10222,15 @@ var _user$project$Main$applyStars = F2(
 var _user$project$Main$parseDependency = function (_p6) {
 	var _p7 = _p6;
 	var _p8 = A2(_elm_lang$core$String$split, '/', _p7._0);
-	if (_p8.ctor === '[]') {
-		return _elm_lang$core$Maybe$Nothing;
+	if ((_p8.ctor === '::') && (_p8._1.ctor === '::')) {
+		return _elm_lang$core$Maybe$Just(
+			{
+				ctor: '_Tuple2',
+				_0: {ctor: '_Tuple2', _0: _p8._0, _1: _p8._1._0},
+				_1: false
+			});
 	} else {
-		if (_p8._1.ctor === '[]') {
-			return _elm_lang$core$Maybe$Nothing;
-		} else {
-			return _elm_lang$core$Maybe$Just(
-				{
-					ctor: '_Tuple2',
-					_0: {ctor: '_Tuple2', _0: _p8._0, _1: _p8._1._0},
-					_1: false
-				});
-		}
+		return _elm_lang$core$Maybe$Nothing;
 	}
 };
 var _user$project$Main$parseDependencies = function (deps) {
@@ -10457,40 +10453,44 @@ var _user$project$Main$init = function (location) {
 			_evancz$url_parser$UrlParser$parsePath,
 			_user$project$Main$redirectParser(repoName),
 			location);
-		if (_p13.ctor === 'Just') {
-			if (_p13._0._0.ctor === 'Just') {
-				if (_p13._0._1.ctor === 'Just') {
-					return {
-						ctor: '_Tuple2',
-						_0: _user$project$Main$requestToken(_p13._0._0._0),
-						_1: _elm_lang$core$Maybe$Just(
-							_user$project$Main$getProjectData(_p13._0._1._0))
-					};
+		_v6_3:
+		do {
+			if (_p13.ctor === 'Just') {
+				if (_p13._0._0.ctor === 'Nothing') {
+					if (_p13._0._1.ctor === 'Just') {
+						return {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Platform_Cmd$none,
+							_1: _elm_lang$core$Maybe$Just(
+								_elm_lang$core$Result$Err(
+									A2(_elm_lang$core$Basics_ops['++'], 'Expected \'code\' and \'state\' query parameters but only found \'state\': ', _p13._0._1._0)))
+						};
+					} else {
+						break _v6_3;
+					}
 				} else {
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Platform_Cmd$none,
-						_1: _elm_lang$core$Maybe$Just(
-							_elm_lang$core$Result$Err(
-								A2(_elm_lang$core$Basics_ops['++'], 'Expected \'code\' and \'state\' query parameters but only found \'code\': ', _p13._0._0._0)))
-					};
+					if (_p13._0._1.ctor === 'Just') {
+						return {
+							ctor: '_Tuple2',
+							_0: _user$project$Main$requestToken(_p13._0._0._0),
+							_1: _elm_lang$core$Maybe$Just(
+								_user$project$Main$getProjectData(_p13._0._1._0))
+						};
+					} else {
+						return {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Platform_Cmd$none,
+							_1: _elm_lang$core$Maybe$Just(
+								_elm_lang$core$Result$Err(
+									A2(_elm_lang$core$Basics_ops['++'], 'Expected \'code\' and \'state\' query parameters but only found \'code\': ', _p13._0._0._0)))
+						};
+					}
 				}
 			} else {
-				if (_p13._0._1.ctor === 'Just') {
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Platform_Cmd$none,
-						_1: _elm_lang$core$Maybe$Just(
-							_elm_lang$core$Result$Err(
-								A2(_elm_lang$core$Basics_ops['++'], 'Expected \'code\' and \'state\' query parameters but only found \'state\': ', _p13._0._1._0)))
-					};
-				} else {
-					return {ctor: '_Tuple2', _0: _elm_lang$core$Platform_Cmd$none, _1: _elm_lang$core$Maybe$Nothing};
-				}
+				break _v6_3;
 			}
-		} else {
-			return {ctor: '_Tuple2', _0: _elm_lang$core$Platform_Cmd$none, _1: _elm_lang$core$Maybe$Nothing};
-		}
+		} while(false);
+		return {ctor: '_Tuple2', _0: _elm_lang$core$Platform_Cmd$none, _1: _elm_lang$core$Maybe$Nothing};
 	}();
 	var cmd = _p12._0;
 	var projectData = _p12._1;
