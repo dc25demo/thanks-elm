@@ -50,7 +50,7 @@ showThanked ( (user, repo), s ) =
             ]
 
 thankingMessage fileName = 
-    "Thanking everyone who helped create and maintain your Elm project's dependences ( as found in file: \"" ++ fileName ++ "\" ) ..."
+    "Thanking everyone who helped create and maintain your Elm project's dependences ( as found in file: \"" ++ fileName ++ "\" ) ...."
 
 allDoneMessage = 
     "All done, thanks for being grateful!"
@@ -58,15 +58,21 @@ allDoneMessage =
 view : Model -> Html Msg
 view model =
     div []
-        (  chooseFile
+        (  chooseFile -- always prompt the user to choose another file.
         :: (br [] [])
         :: (case (model.projectData)  of
                 Just (Err e) ->
                     [ label [] [ text ("Error: " ++ toString e) ] ]
 
                 Just (Ok (fileName, deps)) ->
+
+                       -- Everything good so far; proceed with thanking.
                        ( label [] [ text (thankingMessage fileName)] )
+
+                       -- Show each dependency; indicate if thanking is done.
                     :: ( div [] (List.map showThanked (Dict.toList deps)) )
+
+                       -- after all thanking is done, display message saying so.
                     :: if List.all identity (Dict.values deps) 
                        then [ br [] []
                             , div [] 

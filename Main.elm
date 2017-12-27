@@ -72,6 +72,8 @@ requestToken code =
     in
         send TokenResponse tokenRequest
 
+-- split the dependency at the slash into user and repo, remove dependencies
+-- that contain no slashes ( should not happen ) and set starred to False.
 parseDependency (dependency,_) =
     case String.split "/" dependency of
         user::repo::_ -> Just ((user,repo),False)
@@ -127,7 +129,7 @@ init location =
                 Just (RedirectParams (Just code) Nothing) ->
                     ( Cmd.none, Just (Err ("Expected 'code' and 'state' query parameters but only found 'code': " ++ code)))
 
-                _ ->
+                _ -> -- initial load ; no query parameters.
                     ( Cmd.none, Nothing )
 
     in
@@ -227,7 +229,7 @@ update msg model =
             -- failed github.com access token request
             ( setError model (toString errorMessage), Cmd.none)
 
-        StarSet dependency code ->
+        StarSet dependency _ ->
             -- response recieved from api.github.com after setting star.
             -- No error checking; just flagging completion.
             let
