@@ -9908,7 +9908,7 @@ var _user$project$View$thankingMessage = function (fileName) {
 	return A2(
 		_elm_lang$core$Basics_ops['++'],
 		'Thanking everyone who helped create and maintain your Elm project\'s dependences ( as found in file: \"',
-		A2(_elm_lang$core$Basics_ops['++'], fileName, '\" ) ....'));
+		A2(_elm_lang$core$Basics_ops['++'], fileName, '\" ) .....'));
 };
 var _user$project$View$thankedCheckbox = F2(
 	function (s, boxId) {
