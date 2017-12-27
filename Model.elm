@@ -1,13 +1,12 @@
-module Model exposing (Model, Repo)
+module Model exposing (Model, StarredRepos)
+
 
 import Http exposing (..)
 import Dict exposing (..)
 import Navigation exposing (Location)
 
 
-type alias Repo = String
-
-type alias StarredRepos = Dict Repo Bool
+type alias StarredRepos = Dict (String, String) Bool 
 
 type alias FileName = String
 

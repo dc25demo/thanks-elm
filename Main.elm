@@ -68,7 +68,17 @@ requestToken code =
     in
         send TokenResponse tokenRequest
 
-getProjectData : String -> Result String (String, Dict String Bool)
+parseDependency (dependency,_) =
+    case String.split "/" dependency of
+        [] -> Nothing
+        _::[] -> Nothing
+        user::repo::_ -> Just ((user,repo),False)
+
+parseDependencies deps =
+    let depList = List.filterMap parseDependency (Dict.toList deps)
+    in Dict.fromList depList
+
+getProjectData : String -> Result String (String, StarredRepos)
 getProjectData args = 
     let contentDecoder =
             (JD.field "dependencies" (JD.dict JD.string))
@@ -76,8 +86,7 @@ getProjectData args =
         decodedDeps =
             JD.decodeString contentDecoder args
 
-        dependencies =
-            Result.map (Dict.map (\k s -> False)) decodedDeps
+        dependencies = Result.map parseDependencies decodedDeps
 
         nameDecoder =
             (JD.field "fileName" JD.string)
@@ -130,9 +139,9 @@ init location =
 
 
 -- Use "PUT" request to apply a "star" for one dependency.
-applyStar : String -> String -> Cmd Msg
-applyStar token dependency =
-    let
+applyStar : String -> (String, String) -> Cmd Msg
+applyStar token (user, repo) =
+    let dependency = user ++ "/" ++ repo
         setStar =
             request
                 { method = "PUT"
@@ -144,7 +153,7 @@ applyStar token dependency =
                 , withCredentials = False
                 }
     in
-        send (StarSet dependency) setStar
+        send (StarSet (user,repo)) setStar
 
 
 -- Create Cmd's to apply stars to every dependency.
@@ -153,7 +162,7 @@ applyStars : String -> Model -> Cmd Msg
 applyStars token model =
     case (model.projectData) of
         Just (Ok (_, dependencies)) ->
-            Cmd.batch <| List.map (applyStar token) (keys dependencies)
+            Cmd.batch <| List.map (applyStar token) (Dict.keys dependencies)
 
         _ ->
             Cmd.none

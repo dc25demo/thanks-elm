@@ -9,5 +9,5 @@ type Msg
     = FileSelected
     | FileLoaded FileLoadedData
     | TokenResponse (Result Error String)
-    | StarSet String (Result Error String)
+    | StarSet (String,String) (Result Error String)
     | UrlChange Location

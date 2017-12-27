@@ -37,22 +37,9 @@ thankedCheckbox s boxId =
         []
 
 
-showThanked : ( String, Bool ) -> Html Msg
-showThanked ( d, s ) =
-    let
-        splitDeps =
-            String.split "/" d
-
-        ( user, repo ) =
-            case splitDeps of
-                [] ->
-                    ( "", "" )
-
-                r :: [] ->
-                    ( "", r )
-
-                u :: r :: _ ->
-                    ( u, r )
+showThanked : ( (String,String), Bool ) -> Html Msg
+showThanked ( (user, repo), s ) =
+    let d = user ++ "/" ++ repo
     in
         div []
             [ thankedCheckbox s d
