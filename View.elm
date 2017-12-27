@@ -75,4 +75,4 @@ view model =
 
                 Nothing -> []
            )
-      )
+        )

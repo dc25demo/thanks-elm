@@ -18,7 +18,10 @@ clientId = "167f916723e5ae13e9fe"
 clientSecret = "1ad91f7bb53f9d9e37b9b8927f446b41c615126e"
 
 
-type RedirectParams = RedirectParams (Maybe String) (Maybe String)
+type RedirectParams = 
+         RedirectParams 
+             (Maybe String) -- "code" parameter
+             (Maybe String) -- "state" parameter
 
 -- URL (redirected from github.com ) starts with repoName, 
 -- contains "code" and "state" queries.
@@ -96,8 +99,8 @@ getProjectData args =
 
     in Result.map2 (,) fileName dependencies
 
--- Called without parameters on the initial page load
--- or with parameters when the page is redirected to from github 
+-- Called *without* parameters on the initial page load
+-- and *with* parameters when the page is redirected to from github 
 -- authorization.  If the page is loaded with query parameters,
 -- then requestToken is called to get a access token based on those
 -- parameters.
